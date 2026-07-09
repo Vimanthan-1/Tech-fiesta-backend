@@ -88,6 +88,12 @@ router.post("/create-order", verifyToken, async (req, res) => {
           });
         }
 
+        if (registrationData.selectedNonTechEvents) {
+          registrationData.selectedNonTechEvents.forEach(() => {
+            prices.push(50);
+          });
+        }
+
         // Sort descending so the 3 most expensive items are covered by the pass
         prices.sort((a, b) => b - a);
 
@@ -131,9 +137,15 @@ router.post("/create-order", verifyToken, async (req, res) => {
           totalAmount += 100;
         });
       }
-    }
 
-    // Non-tech events are free (pay on arrival), so no cost added
+      // Calculate non-tech event costs
+      if (
+        registrationData.selectedNonTechEvents &&
+        registrationData.selectedNonTechEvents.length > 0
+      ) {
+        totalAmount += registrationData.selectedNonTechEvents.length * 50;
+      }
+    }
 
     // Final amount
     const amount = totalAmount;

@@ -147,6 +147,11 @@ router.post("/submit", verifyToken, async (req, res) => {
       });
     }
 
+    // Calculate cost for non-tech events (if no pass selected)
+    if (!formData.selectedPass && formData.selectedNonTechEvents) {
+      totalAmount += formData.selectedNonTechEvents.length * 50;
+    }
+
     // Add pass cost if selected
     if (formData.selectedPass) {
       const { getPassById } = require("../data/passes");
@@ -173,6 +178,12 @@ router.post("/submit", verifyToken, async (req, res) => {
           });
         }
 
+        if (formData.selectedNonTechEvents) {
+          formData.selectedNonTechEvents.forEach(() => {
+            prices.push(50);
+          });
+        }
+
         // Sort descending so the 3 most expensive items are covered by the pass
         prices.sort((a, b) => b - a);
 
@@ -187,9 +198,6 @@ router.post("/submit", verifyToken, async (req, res) => {
         }
       }
     }
-
-    // Non-tech events are always free to register (paid on arrival)
-    // So they don't add to totalAmount
 
     console.log(
       `💰 Calculated total amount: ₹${totalAmount} for user ${userEmail}`
