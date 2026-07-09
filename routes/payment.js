@@ -67,16 +67,39 @@ router.post("/create-order", verifyToken, async (req, res) => {
     if (registrationData.selectedPass) {
       const pass = getPassById(registrationData.selectedPass);
       if (pass) {
-        // Add pass cost
-        const passPrice = isCIT
-          ? parseInt(pass.citPrice.replace("₹", ""))
-          : parseInt(pass.price.replace("₹", ""));
-        totalAmount += passPrice;
+        // Collect individual prices of all selected items
+        const prices = [];
+        
+        if (registrationData.selectedEvents) {
+          registrationData.selectedEvents.forEach((se) => {
+            const event = events.find((e) => e.id === se.id);
+            if (event && event.price) {
+              const priceStr = isCIT && event.citPrice ? event.citPrice : event.price;
+              prices.push(parseInt(priceStr.replace("₹", "")));
+            } else {
+              prices.push(isCIT ? 59 : 99);
+            }
+          });
+        }
 
-        // Any 3 registrations (Events or Workshops) included. Extra items are ₹100 each.
-        const totalSelectedItems = (registrationData.selectedEvents?.length || 0) + (registrationData.selectedWorkshops?.length || 0);
-        const additionalItems = Math.max(0, totalSelectedItems - 3);
-        totalAmount += additionalItems * 100;
+        if (registrationData.selectedWorkshops) {
+          registrationData.selectedWorkshops.forEach(() => {
+            prices.push(100);
+          });
+        }
+
+        // Sort descending so the 3 most expensive items are covered by the pass
+        prices.sort((a, b) => b - a);
+
+        // Base pass price is ₹150
+        totalAmount = 150;
+
+        // Any items beyond the first 3 are charged at their regular price
+        if (prices.length > 3) {
+          const extraPrices = prices.slice(3);
+          const extraCost = extraPrices.reduce((sum, p) => sum + p, 0);
+          totalAmount += extraCost;
+        }
       }
     } else {
       // No pass selected - charge for individual events and workshops

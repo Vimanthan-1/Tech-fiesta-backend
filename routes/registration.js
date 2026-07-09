@@ -152,13 +152,39 @@ router.post("/submit", verifyToken, async (req, res) => {
       const { getPassById } = require("../data/passes");
       const pass = getPassById(formData.selectedPass);
       if (pass) {
-        const passPrice = isCIT ? pass.citPrice : pass.price;
-        totalAmount += parseInt(passPrice.replace("₹", ""));
+        // Collect individual prices of all selected items
+        const prices = [];
+        
+        if (formData.selectedEvents) {
+          formData.selectedEvents.forEach((se) => {
+            const event = events.find((e) => e.id === se.id);
+            if (event && event.price) {
+              const priceStr = isCIT && event.citPrice ? event.citPrice : event.price;
+              prices.push(parseInt(priceStr.replace("₹", "")));
+            } else {
+              prices.push(isCIT ? 59 : 99);
+            }
+          });
+        }
 
-        // Any 3 registrations (Events or Workshops) included. Extra items are ₹100 each.
-        const totalSelectedItems = (formData.selectedEvents?.length || 0) + (formData.selectedWorkshops?.length || 0);
-        const additionalItems = Math.max(0, totalSelectedItems - 3);
-        totalAmount += additionalItems * 100;
+        if (formData.selectedWorkshops) {
+          formData.selectedWorkshops.forEach(() => {
+            prices.push(100);
+          });
+        }
+
+        // Sort descending so the 3 most expensive items are covered by the pass
+        prices.sort((a, b) => b - a);
+
+        // Base pass price is ₹150
+        totalAmount = 150;
+
+        // Any items beyond the first 3 are charged at their regular price
+        if (prices.length > 3) {
+          const extraPrices = prices.slice(3);
+          const extraCost = extraPrices.reduce((sum, p) => sum + p, 0);
+          totalAmount += extraCost;
+        }
       }
     }
 
