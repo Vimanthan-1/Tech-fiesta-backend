@@ -13,8 +13,8 @@ const passes = [
       "Access to networking sessions",
       "Certificates for all participated events",
     ],
-    price: "₹200",
-    citPrice: "₹150",
+    price: "₹149",
+    citPrice: "₹149",
     terms: [
       "Pass is valid for the entire Tech Fiesta 2025 duration",
       "Includes 1 workshop + option to select up to 4 additional workshops",

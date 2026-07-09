@@ -66,49 +66,17 @@ router.post("/create-order", verifyToken, async (req, res) => {
     // Check if pass is selected
     if (registrationData.selectedPass) {
       const pass = getPassById(registrationData.selectedPass);
-      const passLimitsInfo = getPassLimits(registrationData.selectedPass);
-
-      if (pass && passLimitsInfo) {
+      if (pass) {
         // Add pass cost
         const passPrice = isCIT
           ? parseInt(pass.citPrice.replace("₹", ""))
           : parseInt(pass.price.replace("₹", ""));
         totalAmount += passPrice;
 
-        // Add cost for additional tech events beyond what's included (if selection is enabled)
-        if (
-          passLimitsInfo.techEventSelectionEnabled &&
-          registrationData.selectedEvents
-        ) {
-          const additionalEvents = Math.max(
-            0,
-            registrationData.selectedEvents.length -
-            passLimitsInfo.techEventsIncluded
-          );
-          if (additionalEvents > 0) {
-            // Each additional tech event: look up dynamically or fallback
-            const sampleEvent = registrationData.selectedEvents
-              .map(se => events.find(e => e.id === se.id))
-              .find(e => e && e.price);
-            const additionalCost = sampleEvent
-              ? parseInt((isCIT && sampleEvent.citPrice ? sampleEvent.citPrice : sampleEvent.price).replace("₹", ""))
-              : (isCIT ? 59 : 99);
-            totalAmount += additionalEvents * additionalCost;
-          }
-        }
-
-        // Add cost for additional workshops beyond what's included
-        if (registrationData.selectedWorkshops) {
-          const additionalWorkshops = Math.max(
-            0,
-            registrationData.selectedWorkshops.length -
-            passLimitsInfo.workshopsIncluded
-          );
-          if (additionalWorkshops > 0) {
-            // Each additional workshop: ₹100 for both regular and CIT
-            totalAmount += additionalWorkshops * 100;
-          }
-        }
+        // Any 3 registrations (Events or Workshops) included. Extra items are ₹100 each.
+        const totalSelectedItems = (registrationData.selectedEvents?.length || 0) + (registrationData.selectedWorkshops?.length || 0);
+        const additionalItems = Math.max(0, totalSelectedItems - 3);
+        totalAmount += additionalItems * 100;
       }
     } else {
       // No pass selected - charge for individual events and workshops

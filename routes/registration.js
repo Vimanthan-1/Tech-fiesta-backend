@@ -154,6 +154,11 @@ router.post("/submit", verifyToken, async (req, res) => {
       if (pass) {
         const passPrice = isCIT ? pass.citPrice : pass.price;
         totalAmount += parseInt(passPrice.replace("₹", ""));
+
+        // Any 3 registrations (Events or Workshops) included. Extra items are ₹100 each.
+        const totalSelectedItems = (formData.selectedEvents?.length || 0) + (formData.selectedWorkshops?.length || 0);
+        const additionalItems = Math.max(0, totalSelectedItems - 3);
+        totalAmount += additionalItems * 100;
       }
     }
 
