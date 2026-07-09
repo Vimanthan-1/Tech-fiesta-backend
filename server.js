@@ -18,6 +18,8 @@ const allowedOrigins = [
   "https://techfiesta2026.vercel.app", // Production Vercel domain
   "https://tech-fiesta-frontend.vercel.app", // Default Vercel deployment domain
   "https://tech-fiesta-frontend-vimanthan-1s-projects.vercel.app", // Vercel preview domain
+  "https://tech-fiesta-2026.vercel.app", // New Vercel domain
+  "https://tech-fiesta.vercel.app", // Base Vercel domain
 ];
 
 app.use(
