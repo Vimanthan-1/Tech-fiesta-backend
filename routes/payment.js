@@ -77,28 +77,39 @@ router.post("/create-order", verifyToken, async (req, res) => {
               const priceStr = event.price;
               prices.push(parseInt(priceStr.replace("₹", "")));
             } else {
-              prices.push(99);
+              prices.push(70);
             }
           });
         }
 
         if (registrationData.selectedWorkshops) {
-          registrationData.selectedWorkshops.forEach(() => {
-            prices.push(100);
+          const workshopsData = require("../data/workshops").workshops;
+          registrationData.selectedWorkshops.forEach((sw) => {
+            const workshop = workshopsData.find((w) => w.id === sw.id);
+            if (workshop && workshop.price) {
+              prices.push(parseInt(workshop.price.replace("₹", "")));
+            } else {
+              prices.push(101);
+            }
           });
         }
 
         if (registrationData.selectedNonTechEvents) {
-          registrationData.selectedNonTechEvents.forEach(() => {
-            prices.push(50);
+          registrationData.selectedNonTechEvents.forEach((se) => {
+            const event = events.find((e) => e.id === se.id);
+            if (event && event.price) {
+              prices.push(parseInt(event.price.replace("₹", "")));
+            } else {
+              prices.push(50);
+            }
           });
         }
 
         // Sort descending so the 3 most expensive items are covered by the pass
         prices.sort((a, b) => b - a);
 
-        // Base pass price is ₹150
-        totalAmount = 150;
+        // Base pass price is ₹149
+        totalAmount = 149;
 
         // Any items beyond the first 3 are charged at their regular price
         if (prices.length > 3) {
@@ -121,8 +132,7 @@ router.post("/create-order", verifyToken, async (req, res) => {
             const priceStr = event.price;
             totalAmount += parseInt(priceStr.replace("₹", ""));
           } else {
-            // Fallback to original hardcoded values if event data is not found
-            totalAmount += 99;
+            totalAmount += 70;
           }
         });
       }
@@ -132,9 +142,14 @@ router.post("/create-order", verifyToken, async (req, res) => {
         registrationData.selectedWorkshops &&
         registrationData.selectedWorkshops.length > 0
       ) {
-        registrationData.selectedWorkshops.forEach((workshop) => {
-          // Workshop pricing: ₹100 for both regular and CIT students
-          totalAmount += 100;
+        const workshopsData = require("../data/workshops").workshops;
+        registrationData.selectedWorkshops.forEach((selectedWorkshop) => {
+          const workshop = workshopsData.find((w) => w.id === selectedWorkshop.id);
+          if (workshop && workshop.price) {
+            totalAmount += parseInt(workshop.price.replace("₹", ""));
+          } else {
+            totalAmount += 101;
+          }
         });
       }
 
@@ -143,7 +158,15 @@ router.post("/create-order", verifyToken, async (req, res) => {
         registrationData.selectedNonTechEvents &&
         registrationData.selectedNonTechEvents.length > 0
       ) {
-        totalAmount += registrationData.selectedNonTechEvents.length * 50;
+        registrationData.selectedNonTechEvents.forEach((selectedEvent) => {
+          const event = events.find((e) => e.id === selectedEvent.id);
+          if (event && event.price) {
+            const priceStr = event.price;
+            totalAmount += parseInt(priceStr.replace("₹", ""));
+          } else {
+            totalAmount += 50;
+          }
+        });
       }
     }
 
