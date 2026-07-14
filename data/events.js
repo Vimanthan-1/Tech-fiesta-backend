@@ -8,7 +8,7 @@ const events = [
     description:
       "Develop feasible solutions to given problems. Present innovative and practical approaches that effectively address requirements and demonstrate technical excellence.",
     tags: ["Presentation", "Innovation", "Research", "Problem Solving"],
-    price: "₹70",
+    price: "₹1",
     maxTeamSize: 2,
   },
 
@@ -19,7 +19,7 @@ const events = [
     description:
       "An elimination arena featuring a multi-round competition: tech quiz, logic finding, coding/debugging, and twists like blind coding or silent collaboration. Teams get eliminated each round until only one survives.",
     tags: ["Competition", "Debugging", "Logic", "Coding", "Teamwork"],
-    price: "₹70",
+    price: "₹1",
     maxTeamSize: 3,
   },
   {
