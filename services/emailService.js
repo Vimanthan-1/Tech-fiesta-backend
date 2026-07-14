@@ -230,272 +230,419 @@ const generateRegistrationEmailTemplate = (
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-        .registration-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea; }
-        .event-list { background: white; padding: 20px; border-radius: 8px; margin: 10px 0; }
-        .event-item { padding: 15px; border-bottom: 1px solid #eee; }
-        .event-item:last-child { border-bottom: none; }
-        .amount { font-size: 24px; font-weight: bold; color: #667eea; }
-        .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
-        .event-details { background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 8px; }
-        .pass-info { background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #28a745; }
-        .free-registration { background: #e8f4f8; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #17a2b8; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            line-height: 1.6; 
+            color: #1e293b; 
+            background-color: #f8fafc; 
+            margin: 0; 
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 40px auto; 
+            padding: 0; 
+            background: #ffffff; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05); 
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        .header { 
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%); 
+            color: white; 
+            padding: 40px 30px; 
+            text-align: center; 
+            position: relative;
+        }
+        .header h1 { 
+            margin: 0 0 10px 0; 
+            font-size: 28px; 
+            font-weight: 800; 
+            letter-spacing: -0.025em;
+            color: #ffffff;
+        }
+        .header h2 { 
+            margin: 0 0 5px 0; 
+            font-size: 18px; 
+            font-weight: 600; 
+            color: #818cf8; 
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .header p { 
+            margin: 0; 
+            font-size: 14px; 
+            color: #94a3b8; 
+        }
+        .date-badge {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.25);
+            border: 1px solid rgba(129, 140, 248, 0.4);
+            color: #e0e7ff;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            margin-top: 15px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .content { 
+            padding: 35px 30px; 
+        }
+        .card { 
+            background: #f8fafc; 
+            padding: 24px; 
+            border-radius: 12px; 
+            margin-bottom: 24px; 
+            border: 1px solid #f1f5f9;
+        }
+        .card-title {
+            margin-top: 0;
+            margin-bottom: 18px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .info-label {
+            color: #64748b;
+            font-weight: 500;
+        }
+        .info-value {
+            color: #0f172a;
+            font-weight: 600;
+            text-align: right;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-verified {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        .badge-free {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+        .event-list { 
+            margin-bottom: 24px;
+        }
+        .event-list-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 16px 0;
+        }
+        .event-card { 
+            background: #ffffff; 
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-bottom: 12px; 
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
+        }
+        .event-title {
+            margin: 0 0 10px 0;
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .event-meta {
+            font-size: 13px;
+            color: #475569;
+            margin-bottom: 4px;
+        }
+        .event-meta strong {
+            color: #334155;
+        }
+        .event-desc {
+            font-size: 13px;
+            color: #64748b;
+            margin: 8px 0 0 0;
+            line-height: 1.5;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+        .amount-display { 
+            font-size: 20px; 
+            font-weight: 800; 
+            color: #4f46e5; 
+        }
+        .pass-card { 
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); 
+            padding: 24px; 
+            border-radius: 12px; 
+            margin-bottom: 24px; 
+            border: 1px solid #bfdbfe; 
+        }
+        .pass-title {
+            color: #1e40af;
+            font-size: 16px;
+            font-weight: 800;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+        .instruction-item {
+            margin-bottom: 8px;
+            padding-left: 10px;
+            position: relative;
+        }
+        .footer { 
+            text-align: center; 
+            padding: 30px; 
+            background-color: #f1f5f9;
+            color: #64748b; 
+            font-size: 13px; 
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer a { 
+            color: #4f46e5; 
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .footer p {
+            margin: 0 0 8px 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎉 Registration Confirmed!</h1>
             <h2>Tech Fiesta 2025</h2>
+            <h1>🎉 Registration Confirmed!</h1>
             <p>Chennai Institute of Technology</p>
+            <div class="date-badge">📅 Event Date: 4th August</div>
         </div>
         
         <div class="content">
-            <div class="registration-details">
-                <h3>📋 Registration Details</h3>
-                <p><strong>Registration ID:</strong> ${registrationId}</p>
-                <p><strong>Participant Name:</strong> ${registrationData.userDetails?.name ||
-    registrationData.name ||
-    "Not provided"
-    }</p>
-                <p><strong>Email:</strong> ${userEmail}</p>
-                <p><strong>College:</strong> ${registrationData.userDetails?.college ||
-    registrationData.college ||
-    "Not provided"
-    }</p>
-                <p><strong>Department:</strong> ${registrationData.userDetails?.department ||
-    registrationData.department ||
-    "Not provided"
-    }</p>
-                <p><strong>Year of Study:</strong> ${registrationData.userDetails?.year ||
-    registrationData.year ||
-    "Not provided"
-    }</p>
-                <p><strong>WhatsApp:</strong> ${registrationData.userDetails?.whatsapp ||
-    registrationData.whatsapp ||
-    "Not provided"
-    }</p>
-                <p><strong>Student Type:</strong> ${isCIT ? "CIT Student" : "External Student"
-    }</p>
+            <div class="card">
+                <div class="card-title">📋 Registration Summary</div>
+                
+                <div class="info-row">
+                    <span class="info-label">Registration ID</span>
+                    <span class="info-value" style="font-family: monospace; font-size: 15px; color: #4f46e5;">${registrationId}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Participant Name</span>
+                    <span class="info-value">${registrationData.userDetails?.name || registrationData.name || "Not provided"}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email Address</span>
+                    <span class="info-value">${userEmail}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">College</span>
+                    <span class="info-value">${registrationData.userDetails?.college || registrationData.college || "Not provided"}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Student Type</span>
+                    <span class="info-value">${isCIT ? "CIT Student" : "External Student"}</span>
+                </div>
+                
                 ${!isFreRegistration
-      ? `
-                <p><strong>Payment ID:</strong> ${paymentDetails.paymentId}</p>
-                <p><strong>Amount Paid:</strong> <span class="amount">₹${paymentDetails.amount}</span></p>
-                <p><strong>Payment Status:</strong> ✅ Verified</p>
-                `
-      : `
-                <div class="free-registration">
-                    <p><strong>Registration Type:</strong> ✅ Free Registration</p>
-                    <p><em>No payment required for your selected events</em></p>
-                </div>
-                `
-    }
-            </div>
-
-            ${(registrationData.teamDetails?.isTeamEvent ||
-      registrationData.isTeamEvent) &&
-      (registrationData.teamDetails?.teamMembers ||
-        registrationData.teamMembers) &&
-      (
-        registrationData.teamDetails?.teamMembers ||
-        registrationData.teamMembers
-      ).length > 0
-      ? `
-            <div class="registration-details">
-                <h3>👥 Team Details</h3>
-                <p><strong>Team Leader:</strong> ${registrationData.userDetails?.name ||
-      registrationData.name ||
-      "Not provided"
-      }</p>
-                <p><strong>Team Size:</strong> ${registrationData.teamDetails?.teamSize ||
-      registrationData.teamSize ||
-      (
-        registrationData.teamDetails?.teamMembers ||
-        registrationData.teamMembers
-      ).length + 1
-      } members</p>
-                <div class="event-details">
-                    <h4>Team Members:</h4>
-                    ${(
-        registrationData.teamDetails?.teamMembers ||
-        registrationData.teamMembers
-      )
-        .map(
-          (member, index) => `
-                        <div style="margin-bottom: 10px; padding: 8px; border-left: 3px solid #667eea;">
-                            <strong>Member ${index + 2}:</strong> ${member.name || "Not provided"
-            }<br>
-                            <small>📧 ${member.email || "Not provided"} | 📱 ${member.whatsapp || "Not provided"
-            }</small><br>
-                            <small>🏛️ ${member.department || "Not provided"
-            } | 📚 ${member.year || "Not provided"}</small>
+                  ? `
+                    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+                        <div class="info-row">
+                            <span class="info-label">Payment ID</span>
+                            <span class="info-value" style="font-family: monospace;">${paymentDetails.paymentId}</span>
                         </div>
+                        <div class="info-row" style="margin-top: 8px;">
+                            <span class="info-label">Amount Paid</span>
+                            <span class="info-value amount-display">₹${paymentDetails.amount}</span>
+                        </div>
+                        <div class="info-row" style="margin-top: 8px;">
+                            <span class="info-label">Payment Status</span>
+                            <span class="info-value"><span class="badge badge-verified">✅ Verified</span></span>
+                        </div>
+                    </div>
                     `
-        )
-        .join("")}
-                </div>
+                  : `
+                    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+                        <div class="info-row">
+                            <span class="info-label">Registration Type</span>
+                            <span class="info-value"><span class="badge badge-free">✅ Free Registration</span></span>
+                        </div>
+                    </div>
+                    `
+                }
             </div>
-            `
-      : ""
-    }
 
-            ${selectedPass
-      ? `
-            <div class="pass-info">
-                <h3>🎫 Selected Pass</h3>
-                <div class="event-item">
-                    <strong>Tech Fiesta General Pass</strong><br>
-                    <div class="event-details">
-                        <p>✅ Unlimited access to ALL technical events</p>
-                        <p>✅ 1 workshop included + up to 4 additional workshops</p>
-                        <p>✅ Priority seating and exclusive merchandise</p>
-                        <p><strong>Pass ID:</strong> ${selectedPass}</p>
+            ${(registrationData.teamDetails?.isTeamEvent || registrationData.isTeamEvent) &&
+              (registrationData.teamDetails?.teamMembers || registrationData.teamMembers) &&
+              (registrationData.teamDetails?.teamMembers || registrationData.teamMembers).length > 0
+              ? `
+                <div class="card">
+                    <div class="card-title">👥 Team Information</div>
+                    <div class="info-row">
+                        <span class="info-label">Team Leader</span>
+                        <span class="info-value">${registrationData.userDetails?.name || registrationData.name || "Not provided"}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Team Size</span>
+                        <span class="info-value">${registrationData.teamDetails?.teamSize || registrationData.teamSize || (registrationData.teamDetails?.teamMembers || registrationData.teamMembers).length + 1} members</span>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <h4 style="margin: 0 0 10px 0; font-size: 13px; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">Team Members:</h4>
+                        ${(registrationData.teamDetails?.teamMembers || registrationData.teamMembers)
+                            .map((member, index) => `
+                                <div style="margin-bottom: 12px; padding: 10px 14px; background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; border-left: 4px solid #6366f1;">
+                                    <div style="font-weight: 700; font-size: 14px; color: #0f172a;">Member ${index + 2}: ${member.name || "Not provided"}</div>
+                                    <div style="font-size: 12px; color: #64748b; margin-top: 3px;">
+                                        📧 ${member.email || "N/A"} | 📱 ${member.whatsapp || "N/A"}
+                                    </div>
+                                    <div style="font-size: 12px; color: #64748b;">
+                                        🏛️ ${member.department || "N/A"} | Year ${member.year || "N/A"}
+                                    </div>
+                                </div>
+                            `).join("")}
                     </div>
                 </div>
-            </div>
-            `
-      : ""
-    }
-
-            ${!selectedPass &&
-      selectedEventDetails.length === 0 &&
-      selectedWorkshopDetails.length === 0 &&
-      selectedNonTechEventDetails.length === 0
-      ? `
-            <div class="event-list">
-                <h3>🎪 Welcome to Tech Fiesta 2025!</h3>
-                <div class="event-item" style="background: #e8f4fd; border-left: 4px solid #2196f3;">
-                    <p style="margin: 0; color: #1976d2;">
-                        <strong>🎉 Your registration is complete!</strong><br><br>
-                        You can still participate in events by:
-                    </p>
-                    <div class="event-details">
-                        <p>🎯 <strong>Walk-in Registration:</strong> Available at the venue for most events</p>
-                        <p>🎨 <strong>Non-Tech Events:</strong> Register and pay at the venue on event day</p>
-                        <p>🎫 <strong>General Pass:</strong> Purchase at the venue for unlimited access to all tech events</p>
-                        <p>📱 <strong>Mobile Registration:</strong> Use our website to add more events anytime</p>
-                    </div>
-                </div>
-            </div>
-            `
-      : ""
-    }
-
-            ${selectedEventDetails.length > 0
-      ? `
-            <div class="event-list">
-                <h3>🎯 Technical Events Registered</h3>
-                ${selectedEventDetails
-        .map(
-          (event) => `
-                <div class="event-item">
-                    <strong>${event.title}</strong>
-                    <div class="event-details">
-                        <p>📅 <strong>Date:</strong> ${event.date}</p>
-                        <p>🕒 <strong>Time:</strong> ${event.time}</p>
-                        <p>📍 <strong>Venue:</strong> ${event.venue}</p>
-                        <p>📝 <strong>Description:</strong> ${event.description
-            }</p>
-                        ${event.speakers
-              ? `<p>👨‍🏫 <strong>Speakers:</strong> ${event.speakers.join(
-                ", "
-              )}</p>`
+                `
               : ""
             }
+
+            ${selectedPass
+              ? `
+                <div class="pass-card">
+                    <div class="pass-title">🎫 Selected Pass Details</div>
+                    <div style="font-weight: 700; color: #1e3a8a; font-size: 15px;">Tech Fiesta General Pass</div>
+                    <div style="font-size: 13px; color: #1e40af; margin-top: 8px; line-height: 1.5;">
+                        <div style="margin-bottom: 4px;">✅ Unlimited access to ALL technical events</div>
+                        <div style="margin-bottom: 4px;">✅ 1 workshop included + up to 4 additional workshops</div>
+                        <div style="margin-bottom: 4px;">✅ Priority seating and exclusive merchandise access</div>
+                    </div>
+                    <div style="margin-top: 15px; font-size: 13px; color: #1e40af;">
+                        <strong>Pass ID:</strong> <span style="font-family: monospace; font-size: 14px; font-weight: bold;">${selectedPass}</span>
                     </div>
                 </div>
                 `
-        )
-        .join("")}
-            </div>
-            `
-      : ""
-    }
+              : ""
+            }
+
+            ${!selectedPass &&
+              selectedEventDetails.length === 0 &&
+              selectedWorkshopDetails.length === 0 &&
+              selectedNonTechEventDetails.length === 0
+              ? `
+                <div class="card" style="background: #eff6ff; border: 1px solid #bfdbfe;">
+                    <div class="card-title" style="color: #1e40af; border-bottom-color: #bfdbfe;">🎪 Welcome to Tech Fiesta 2025!</div>
+                    <p style="margin: 0; font-size: 14px; color: #1e3a8a;">
+                        Your registration has been completed successfully! You can still sign up for individual events:
+                    </p>
+                    <div style="margin-top: 12px; font-size: 13px; color: #1e40af; line-height: 1.6;">
+                        • <strong>Walk-in Registration:</strong> Available at the venue for most events<br>
+                        • <strong>Non-Tech Events:</strong> Register and pay at the venue on event day<br>
+                        • <strong>General Pass:</strong> Purchase at the venue for unlimited access to tech events
+                    </div>
+                </div>
+                `
+              : ""
+            }
+
+            ${selectedEventDetails.length > 0
+              ? `
+                <div class="event-list">
+                    <div class="event-list-title">🎯 Technical Events Registered</div>
+                    ${selectedEventDetails.map((event) => `
+                        <div class="event-card">
+                            <div class="event-title">${event.title}</div>
+                            <div class="event-meta">📅 <strong>Date:</strong> 4th August</div>
+                            <div class="event-meta">🕒 <strong>Time:</strong> ${event.time}</div>
+                            <div class="event-meta">📍 <strong>Venue:</strong> ${event.venue}</div>
+                            <p class="event-desc">${event.description}</p>
+                        </div>
+                    `).join("")}
+                </div>
+                `
+              : ""
+            }
 
             ${selectedWorkshopDetails.length > 0
-      ? `
-            <div class="event-list">
-                <h3>🛠️ Workshops Registered</h3>
-                ${selectedWorkshopDetails
-        .map(
-          (workshop) => `
-                <div class="event-item">
-                    <strong>${workshop.title}</strong>
-                    <div class="event-details">
-                        <p>📅 <strong>Date:</strong> ${workshop.date}</p>
-                        <p>🕒 <strong>Time:</strong> ${workshop.time}</p>
-                        <p>📍 <strong>Venue:</strong> ${workshop.venue}</p>
-                        <p>📝 <strong>Description:</strong> ${workshop.description}</p>
-                        <p>👨‍🏫 <strong>Instructor:</strong> ${workshop.instructor}</p>
-                        <p>⏱️ <strong>Duration:</strong> ${workshop.duration}</p>
-                        <p>📊 <strong>Level:</strong> ${workshop.level}</p>
-                    </div>
+              ? `
+                <div class="event-list">
+                    <div class="event-list-title">🛠️ Workshops Registered</div>
+                    ${selectedWorkshopDetails.map((workshop) => `
+                        <div class="event-card" style="border-left: 4px solid #10b981;">
+                            <div class="event-title">${workshop.title}</div>
+                            <div class="event-meta">📅 <strong>Date:</strong> 4th August</div>
+                            <div class="event-meta">🕒 <strong>Time:</strong> ${workshop.time}</div>
+                            <div class="event-meta">📍 <strong>Venue:</strong> ${workshop.venue}</div>
+                            <div class="event-meta">👨‍🏫 <strong>Instructor:</strong> ${workshop.instructor}</div>
+                            <div class="event-meta">⏱️ <strong>Duration:</strong> ${workshop.duration} | 📊 <strong>Level:</strong> ${workshop.level}</div>
+                            <p class="event-desc">${workshop.description}</p>
+                        </div>
+                    `).join("")}
                 </div>
                 `
-        )
-        .join("")}
-            </div>
-            `
-      : ""
-    }
+              : ""
+            }
 
             ${selectedNonTechEventDetails.length > 0
-      ? `
-            <div class="event-list">
-                <h3>🎨 Non-Technical Events Registered</h3>
-                <p style="background: #fff3cd; padding: 10px; border-radius: 5px; color: #856404; margin-bottom: 15px;">
-                    <strong>📢 Important:</strong> Payment for non-technical events is required at the venue on the day of the event.
-                </p>
-                ${selectedNonTechEventDetails
-        .map(
-          (event) => `
-                <div class="event-item">
-                    <strong>${event.title}</strong>
-                    <div class="event-details">
-                        <p>📅 <strong>Date:</strong> ${event.date}</p>
-                        <p>🕒 <strong>Time:</strong> ${event.time}</p>
-                        <p>📍 <strong>Venue:</strong> ${event.venue}</p>
-                        <p>📝 <strong>Description:</strong> ${event.description}</p>
-                        <p>💰 <strong>Payment:</strong> At venue on arrival</p>
+              ? `
+                <div class="event-list">
+                    <div class="event-list-title">🎨 Non-Technical Events Registered</div>
+                    <div style="background: #fef3c7; border: 1px solid #fde68a; padding: 12px 16px; border-radius: 8px; color: #92400e; font-size: 13px; margin-bottom: 12px; font-weight: 500;">
+                        📢 <strong>Important:</strong> Payment for non-technical events is collected at the venue on the day of the event.
                     </div>
+                    ${selectedNonTechEventDetails.map((event) => `
+                        <div class="event-card" style="border-left: 4px solid #f59e0b;">
+                            <div class="event-title">${event.title}</div>
+                            <div class="event-meta">📅 <strong>Date:</strong> 4th August</div>
+                            <div class="event-meta">🕒 <strong>Time:</strong> ${event.time}</div>
+                            <div class="event-meta">📍 <strong>Venue:</strong> ${event.venue}</div>
+                            <p class="event-desc">${event.description}</p>
+                        </div>
+                    `).join("")}
                 </div>
                 `
-        )
-        .join("")}
-            </div>
-            `
-      : ""
-    }
+              : ""
+            }
 
-            <div class="registration-details">
-                <h3>📋 Important Instructions</h3>
-                <ul>
-                    <li><strong>Save this email</strong> for your records - you'll need it for event entry</li>
-                    <li><strong>Bring a valid ID card</strong> to all events for verification</li>
-                    <li><strong>Arrive 15 minutes early</strong> to all registered events</li>
-                    <li><strong>Non-tech events</strong> require payment at the venue before participation</li>
-                    <li><strong>Follow event-specific guidelines</strong> that will be shared at the venue</li>
-                    <li><strong>Contact support</strong> if you have any questions about your registration</li>
+            <div class="card">
+                <div class="card-title" style="color: #ef4444; border-bottom-color: #fee2e2;">⚠️ Essential Instructions</div>
+                <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569; line-height: 1.7;">
+                    <li style="margin-bottom: 6px;"><strong>Save this email</strong> - show the Registration ID at the desk.</li>
+                    <li style="margin-bottom: 6px;">Bring your college **physical ID card** for quick validation.</li>
+                    <li style="margin-bottom: 6px;">Arrive at the respective venues at least **15 minutes early**.</li>
+                    <li style="margin-bottom: 6px;">Walk-in and on-the-spot payments apply for any unpaid non-tech entries.</li>
                 </ul>
             </div>
 
-            <div class="registration-details">
-                <h3>📞 Contact Information</h3>
-                <p><strong>Email:</strong> Asymmetric@citchennai.net</p>
-                <p><strong>Event Queries:</strong> Contact event coordinators at the venue</p>
-                <p><strong>Registration Support:</strong> Show this email and your ID at registration desk</p>
+            <div class="card">
+                <div class="card-title">📞 Contact Support</div>
+                <div class="info-row">
+                    <span class="info-label">Support Email</span>
+                    <span class="info-value"><a href="mailto:Asymmetric@citchennai.net" style="color: #4f46e5; text-decoration: none; font-weight: bold;">Asymmetric@citchennai.net</a></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Help Desk</span>
+                    <span class="info-value">Main Campus Registration Desk</span>
+                </div>
             </div>
         </div>
         
         <div class="footer">
-            <p>Thank you for registering for Tech Fiesta 2025!</p>
-            <p><strong>Chennai Institute of Technology</strong></p>
-            <p>For any queries, contact us at <a href="mailto:Asymmetric@citchennai.net">Asymmetric@citchennai.net</a></p>
-            <p>© 2025 Tech Fiesta - Chennai Institute of Technology</p>
+            <p>Thank you for participating in Tech Fiesta 2025!</p>
+            <p style="font-weight: 700; color: #334155;">Chennai Institute of Technology</p>
+            <p>© 2025 Tech Fiesta. All rights reserved.</p>
         </div>
     </div>
 </body>
@@ -555,6 +702,7 @@ const sendRegistrationConfirmationEmail = async (
           textContent: `
 Tech Fiesta 2025 - Registration Confirmed
 
+Event Date: 4th August
 Registration ID: ${registrationData.registrationId}
 Email: ${registrationData.userEmail}
 Amount Paid: ₹${registrationData.paymentDetails?.amount || 0}

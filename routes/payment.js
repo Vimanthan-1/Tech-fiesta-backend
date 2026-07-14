@@ -715,9 +715,9 @@ router.post("/test-email", verifyToken, async (req, res) => {
         },
         selectedEvents: [
           { id: 1, title: "Paper Presentation" },
-          { id: 2, title: "Jeopardy-Style CTF" },
+          { id: 3, title: "Tech Survivor" },
         ],
-        selectedWorkshops: [{ id: 1, title: "Blend with Blender" }],
+        selectedWorkshops: [{ id: 1, title: "Orchestration of Multi-Agent Systems in Production" }],
         selectedNonTechEvents: [
           { id: 7, title: "Photography Contest" },
           { id: 8, title: "Gaming Tournament" },

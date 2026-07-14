@@ -11,16 +11,7 @@ const events = [
     price: "₹99",
     maxTeamSize: 2,
   },
-  {
-    id: 2,
-    title: "Jeopardy-Style CTF",
-    type: "tech",
-    description:
-      "A fast, game-like event where teams solve a set of small technical challenges to uncover hidden 'flags'. Challenges are split into Web, Crypto, and Forensics across easy to medium difficulties. Pick any challenge in any order, and submit the flag to climb the live leaderboard.",
-    tags: ["CTF", "Security", "Web", "Crypto", "Forensics", "Competition"],
-    price: "₹99",
-    maxTeamSize: 3,
-  },
+
   {
     id: 3,
     title: "Tech Survivor",
