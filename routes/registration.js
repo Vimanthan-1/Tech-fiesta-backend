@@ -128,6 +128,8 @@ router.post("/submit", verifyToken, async (req, res) => {
         if (event && event.price) {
           const price = event.price;
           totalAmount += parseInt(price.replace("₹", ""));
+        } else {
+          totalAmount += 70;
         }
       });
     }
@@ -142,13 +144,23 @@ router.post("/submit", verifyToken, async (req, res) => {
         if (workshop && workshop.price) {
           const price = workshop.price;
           totalAmount += parseInt(price.replace("₹", ""));
+        } else {
+          totalAmount += 101;
         }
       });
     }
 
     // Calculate cost for non-tech events (if no pass selected)
     if (!formData.selectedPass && formData.selectedNonTechEvents) {
-      totalAmount += formData.selectedNonTechEvents.length * 50;
+      formData.selectedNonTechEvents.forEach((selectedEvent) => {
+        const event = events.find((e) => e.id === selectedEvent.id);
+        if (event && event.price) {
+          const price = event.price;
+          totalAmount += parseInt(price.replace("₹", ""));
+        } else {
+          totalAmount += 50;
+        }
+      });
     }
 
     // Add pass cost if selected
@@ -166,28 +178,41 @@ router.post("/submit", verifyToken, async (req, res) => {
               const priceStr = event.price;
               prices.push(parseInt(priceStr.replace("₹", "")));
             } else {
-              prices.push(99);
+              prices.push(70);
             }
           });
         }
 
         if (formData.selectedWorkshops) {
-          formData.selectedWorkshops.forEach(() => {
-            prices.push(100);
+          const workshopsData = require("../data/workshops").workshops;
+          formData.selectedWorkshops.forEach((sw) => {
+            const workshop = workshopsData.find(
+              (w) => w.id === sw.id
+            );
+            if (workshop && workshop.price) {
+              prices.push(parseInt(workshop.price.replace("₹", "")));
+            } else {
+              prices.push(101);
+            }
           });
         }
 
         if (formData.selectedNonTechEvents) {
-          formData.selectedNonTechEvents.forEach(() => {
-            prices.push(50);
+          formData.selectedNonTechEvents.forEach((se) => {
+            const event = events.find((e) => e.id === se.id);
+            if (event && event.price) {
+              prices.push(parseInt(event.price.replace("₹", "")));
+            } else {
+              prices.push(50);
+            }
           });
         }
 
         // Sort descending so the 3 most expensive items are covered by the pass
         prices.sort((a, b) => b - a);
 
-        // Base pass price is ₹150
-        totalAmount = 150;
+        // Base pass price is ₹149
+        totalAmount = 149;
 
         // Any items beyond the first 3 are charged at their regular price
         if (prices.length > 3) {
