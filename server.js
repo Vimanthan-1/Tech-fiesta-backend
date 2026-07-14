@@ -18,6 +18,8 @@ const allowedOrigins = [
   "https://techfiesta2026.vercel.app", // Production Vercel domain
   "https://tech-fiesta-frontend.vercel.app", // Default Vercel deployment domain
   "https://tech-fiesta-frontend-vimanthan-1s-projects.vercel.app", // Vercel preview domain
+  "https://tech-fiesta-2026.vercel.app", // New Vercel domain
+  "https://tech-fiesta.vercel.app", // Base Vercel domain
 ];
 
 app.use(
@@ -68,6 +70,7 @@ const workshopRoutes = require("./routes/workshops");
 const passRoutes = require("./routes/passes");
 const registrationRoutes = require("./routes/registration");
 const paymentRoutes = require("./routes/payment");
+const contactRoutes = require("./routes/contact");
 
 // Routes
 app.use("/api/events", eventRoutes);
@@ -75,6 +78,7 @@ app.use("/api/workshops", workshopRoutes);
 app.use("/api/passes", passRoutes);
 app.use("/api/registration", registrationRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {

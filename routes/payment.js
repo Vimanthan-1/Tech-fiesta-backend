@@ -66,48 +66,45 @@ router.post("/create-order", verifyToken, async (req, res) => {
     // Check if pass is selected
     if (registrationData.selectedPass) {
       const pass = getPassById(registrationData.selectedPass);
-      const passLimitsInfo = getPassLimits(registrationData.selectedPass);
-
-      if (pass && passLimitsInfo) {
-        // Add pass cost
-        const passPrice = isCIT
-          ? parseInt(pass.citPrice.replace("₹", ""))
-          : parseInt(pass.price.replace("₹", ""));
-        totalAmount += passPrice;
-
-        // Add cost for additional tech events beyond what's included (if selection is enabled)
-        if (
-          passLimitsInfo.techEventSelectionEnabled &&
-          registrationData.selectedEvents
-        ) {
-          const additionalEvents = Math.max(
-            0,
-            registrationData.selectedEvents.length -
-            passLimitsInfo.techEventsIncluded
-          );
-          if (additionalEvents > 0) {
-            // Each additional tech event: look up dynamically or fallback
-            const sampleEvent = registrationData.selectedEvents
-              .map(se => events.find(e => e.id === se.id))
-              .find(e => e && e.price);
-            const additionalCost = sampleEvent
-              ? parseInt((isCIT && sampleEvent.citPrice ? sampleEvent.citPrice : sampleEvent.price).replace("₹", ""))
-              : (isCIT ? 59 : 99);
-            totalAmount += additionalEvents * additionalCost;
-          }
+      if (pass) {
+        // Collect individual prices of all selected items
+        const prices = [];
+        
+        if (registrationData.selectedEvents) {
+          registrationData.selectedEvents.forEach((se) => {
+            const event = events.find((e) => e.id === se.id);
+            if (event && event.price) {
+              const priceStr = event.price;
+              prices.push(parseInt(priceStr.replace("₹", "")));
+            } else {
+              prices.push(99);
+            }
+          });
         }
 
-        // Add cost for additional workshops beyond what's included
         if (registrationData.selectedWorkshops) {
-          const additionalWorkshops = Math.max(
-            0,
-            registrationData.selectedWorkshops.length -
-            passLimitsInfo.workshopsIncluded
-          );
-          if (additionalWorkshops > 0) {
-            // Each additional workshop: ₹100 for both regular and CIT
-            totalAmount += additionalWorkshops * 100;
-          }
+          registrationData.selectedWorkshops.forEach(() => {
+            prices.push(100);
+          });
+        }
+
+        if (registrationData.selectedNonTechEvents) {
+          registrationData.selectedNonTechEvents.forEach(() => {
+            prices.push(50);
+          });
+        }
+
+        // Sort descending so the 3 most expensive items are covered by the pass
+        prices.sort((a, b) => b - a);
+
+        // Base pass price is ₹150
+        totalAmount = 150;
+
+        // Any items beyond the first 3 are charged at their regular price
+        if (prices.length > 3) {
+          const extraPrices = prices.slice(3);
+          const extraCost = extraPrices.reduce((sum, p) => sum + p, 0);
+          totalAmount += extraCost;
         }
       }
     } else {
@@ -121,11 +118,11 @@ router.post("/create-order", verifyToken, async (req, res) => {
         registrationData.selectedEvents.forEach((selectedEvent) => {
           const event = events.find((e) => e.id === selectedEvent.id);
           if (event && event.price) {
-            const priceStr = isCIT && event.citPrice ? event.citPrice : event.price;
+            const priceStr = event.price;
             totalAmount += parseInt(priceStr.replace("₹", ""));
           } else {
             // Fallback to original hardcoded values if event data is not found
-            totalAmount += isCIT ? 59 : 99;
+            totalAmount += 99;
           }
         });
       }
@@ -140,9 +137,15 @@ router.post("/create-order", verifyToken, async (req, res) => {
           totalAmount += 100;
         });
       }
-    }
 
-    // Non-tech events are free (pay on arrival), so no cost added
+      // Calculate non-tech event costs
+      if (
+        registrationData.selectedNonTechEvents &&
+        registrationData.selectedNonTechEvents.length > 0
+      ) {
+        totalAmount += registrationData.selectedNonTechEvents.length * 50;
+      }
+    }
 
     // Final amount
     const amount = totalAmount;

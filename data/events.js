@@ -9,7 +9,6 @@ const events = [
       "Develop feasible solutions to given problems. Present innovative and practical approaches that effectively address requirements and demonstrate technical excellence.",
     tags: ["Presentation", "Innovation", "Research", "Problem Solving"],
     price: "₹99",
-    citPrice: "₹1",
     maxTeamSize: 2,
   },
   {
@@ -20,7 +19,6 @@ const events = [
       "A fast, game-like event where teams solve a set of small technical challenges to uncover hidden 'flags'. Challenges are split into Web, Crypto, and Forensics across easy to medium difficulties. Pick any challenge in any order, and submit the flag to climb the live leaderboard.",
     tags: ["CTF", "Security", "Web", "Crypto", "Forensics", "Competition"],
     price: "₹99",
-    citPrice: "₹59",
     maxTeamSize: 3,
   },
   {
@@ -31,7 +29,6 @@ const events = [
       "An elimination arena featuring a multi-round competition: tech quiz, logic finding, coding/debugging, and twists like blind coding or silent collaboration. Teams get eliminated each round until only one survives.",
     tags: ["Competition", "Debugging", "Logic", "Coding", "Teamwork"],
     price: "₹99",
-    citPrice: "₹59",
     maxTeamSize: 3,
   },
   {
@@ -42,7 +39,6 @@ const events = [
       "A high-pressure coding relay on a single LeetCode problem. Each teammate gets exactly 5 minutes at the keyboard before stopping immediately. No restarting, no handover explanation, and no communication during transitions.",
     tags: ["LeetCode", "Coding", "Relay", "Teamwork", "Speed"],
     price: "₹99",
-    citPrice: "₹59",
     maxTeamSize: 4,
   },
   {
@@ -53,7 +49,6 @@ const events = [
       "An AR + QR cyber treasure hunt where teams navigate the campus scanning QR codes to solve coding puzzles, encrypted messages, cybersecurity clues, and AR missions to eventually access the Master Server.",
     tags: ["Treasure Hunt", "AR", "QR", "Cybersecurity", "Puzzles"],
     price: "₹99",
-    citPrice: "₹59",
     maxTeamSize: 3,
   },
   {
@@ -64,7 +59,6 @@ const events = [
       "A stage event where participants debate trending and controversial technology topics like AI, cybersecurity, startups, social media, coding culture, and future tech. Focuses on critical thinking, public speaking, and team coordination.",
     tags: ["Debate", "Public Speaking", "Critical Thinking", "Tech Trends"],
     price: "₹99",
-    citPrice: "₹59",
     maxTeamSize: 2,
   },
 
