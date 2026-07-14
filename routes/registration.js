@@ -126,7 +126,7 @@ router.post("/submit", verifyToken, async (req, res) => {
       formData.selectedEvents.forEach((selectedEvent) => {
         const event = events.find((e) => e.id === selectedEvent.id);
         if (event && event.price) {
-          const price = isCIT && event.citPrice ? event.citPrice : event.price;
+          const price = event.price;
           totalAmount += parseInt(price.replace("₹", ""));
         }
       });
@@ -140,8 +140,7 @@ router.post("/submit", verifyToken, async (req, res) => {
           (w) => w.id === selectedWorkshop.id
         );
         if (workshop && workshop.price) {
-          const price =
-            isCIT && workshop.citPrice ? workshop.citPrice : workshop.price;
+          const price = workshop.price;
           totalAmount += parseInt(price.replace("₹", ""));
         }
       });
@@ -164,10 +163,10 @@ router.post("/submit", verifyToken, async (req, res) => {
           formData.selectedEvents.forEach((se) => {
             const event = events.find((e) => e.id === se.id);
             if (event && event.price) {
-              const priceStr = isCIT && event.citPrice ? event.citPrice : event.price;
+              const priceStr = event.price;
               prices.push(parseInt(priceStr.replace("₹", "")));
             } else {
-              prices.push(isCIT ? 59 : 99);
+              prices.push(99);
             }
           });
         }

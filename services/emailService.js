@@ -141,10 +141,9 @@ const createTransporter = (config) => {
   }
 
   console.log(
-    `🔧 Creating transporter for Gmail: ${
-      config && config.email
-        ? config.email.replace(/(.{3}).*(@.*)/, "$1***$2")
-        : "Not configured"
+    `🔧 Creating transporter for Gmail: ${config && config.email
+      ? config.email.replace(/(.{3}).*(@.*)/, "$1***$2")
+      : "Not configured"
     }`
   );
 
@@ -259,107 +258,93 @@ const generateRegistrationEmailTemplate = (
             <div class="registration-details">
                 <h3>📋 Registration Details</h3>
                 <p><strong>Registration ID:</strong> ${registrationId}</p>
-                <p><strong>Participant Name:</strong> ${
-                  registrationData.userDetails?.name ||
-                  registrationData.name ||
-                  "Not provided"
-                }</p>
+                <p><strong>Participant Name:</strong> ${registrationData.userDetails?.name ||
+    registrationData.name ||
+    "Not provided"
+    }</p>
                 <p><strong>Email:</strong> ${userEmail}</p>
-                <p><strong>College:</strong> ${
-                  registrationData.userDetails?.college ||
-                  registrationData.college ||
-                  "Not provided"
-                }</p>
-                <p><strong>Department:</strong> ${
-                  registrationData.userDetails?.department ||
-                  registrationData.department ||
-                  "Not provided"
-                }</p>
-                <p><strong>Year of Study:</strong> ${
-                  registrationData.userDetails?.year ||
-                  registrationData.year ||
-                  "Not provided"
-                }</p>
-                <p><strong>WhatsApp:</strong> ${
-                  registrationData.userDetails?.whatsapp ||
-                  registrationData.whatsapp ||
-                  "Not provided"
-                }</p>
-                <p><strong>Student Type:</strong> ${
-                  isCIT ? "CIT Student" : "External Student"
-                }</p>
-                ${
-                  !isFreRegistration
-                    ? `
+                <p><strong>College:</strong> ${registrationData.userDetails?.college ||
+    registrationData.college ||
+    "Not provided"
+    }</p>
+                <p><strong>Department:</strong> ${registrationData.userDetails?.department ||
+    registrationData.department ||
+    "Not provided"
+    }</p>
+                <p><strong>Year of Study:</strong> ${registrationData.userDetails?.year ||
+    registrationData.year ||
+    "Not provided"
+    }</p>
+                <p><strong>WhatsApp:</strong> ${registrationData.userDetails?.whatsapp ||
+    registrationData.whatsapp ||
+    "Not provided"
+    }</p>
+                <p><strong>Student Type:</strong> ${isCIT ? "CIT Student" : "External Student"
+    }</p>
+                ${!isFreRegistration
+      ? `
                 <p><strong>Payment ID:</strong> ${paymentDetails.paymentId}</p>
                 <p><strong>Amount Paid:</strong> <span class="amount">₹${paymentDetails.amount}</span></p>
                 <p><strong>Payment Status:</strong> ✅ Verified</p>
                 `
-                    : `
+      : `
                 <div class="free-registration">
                     <p><strong>Registration Type:</strong> ✅ Free Registration</p>
                     <p><em>No payment required for your selected events</em></p>
                 </div>
                 `
-                }
+    }
             </div>
 
-            ${
-              (registrationData.teamDetails?.isTeamEvent ||
-                registrationData.isTeamEvent) &&
-              (registrationData.teamDetails?.teamMembers ||
-                registrationData.teamMembers) &&
-              (
-                registrationData.teamDetails?.teamMembers ||
-                registrationData.teamMembers
-              ).length > 0
-                ? `
+            ${(registrationData.teamDetails?.isTeamEvent ||
+      registrationData.isTeamEvent) &&
+      (registrationData.teamDetails?.teamMembers ||
+        registrationData.teamMembers) &&
+      (
+        registrationData.teamDetails?.teamMembers ||
+        registrationData.teamMembers
+      ).length > 0
+      ? `
             <div class="registration-details">
                 <h3>👥 Team Details</h3>
-                <p><strong>Team Leader:</strong> ${
-                  registrationData.userDetails?.name ||
-                  registrationData.name ||
-                  "Not provided"
-                }</p>
-                <p><strong>Team Size:</strong> ${
-                  registrationData.teamDetails?.teamSize ||
-                  registrationData.teamSize ||
-                  (
-                    registrationData.teamDetails?.teamMembers ||
-                    registrationData.teamMembers
-                  ).length + 1
-                } members</p>
+                <p><strong>Team Leader:</strong> ${registrationData.userDetails?.name ||
+      registrationData.name ||
+      "Not provided"
+      }</p>
+                <p><strong>Team Size:</strong> ${registrationData.teamDetails?.teamSize ||
+      registrationData.teamSize ||
+      (
+        registrationData.teamDetails?.teamMembers ||
+        registrationData.teamMembers
+      ).length + 1
+      } members</p>
                 <div class="event-details">
                     <h4>Team Members:</h4>
                     ${(
-                      registrationData.teamDetails?.teamMembers ||
-                      registrationData.teamMembers
-                    )
-                      .map(
-                        (member, index) => `
+        registrationData.teamDetails?.teamMembers ||
+        registrationData.teamMembers
+      )
+        .map(
+          (member, index) => `
                         <div style="margin-bottom: 10px; padding: 8px; border-left: 3px solid #667eea;">
-                            <strong>Member ${index + 2}:</strong> ${
-                          member.name || "Not provided"
-                        }<br>
-                            <small>📧 ${member.email || "Not provided"} | 📱 ${
-                          member.whatsapp || "Not provided"
-                        }</small><br>
-                            <small>🏛️ ${
-                              member.department || "Not provided"
-                            } | 📚 ${member.year || "Not provided"}</small>
+                            <strong>Member ${index + 2}:</strong> ${member.name || "Not provided"
+            }<br>
+                            <small>📧 ${member.email || "Not provided"} | 📱 ${member.whatsapp || "Not provided"
+            }</small><br>
+                            <small>🏛️ ${member.department || "Not provided"
+            } | 📚 ${member.year || "Not provided"}</small>
                         </div>
                     `
-                      )
-                      .join("")}
+        )
+        .join("")}
                 </div>
             </div>
             `
-                : ""
-            }
+      : ""
+    }
 
-            ${
-              selectedPass
-                ? `
+            ${selectedPass
+      ? `
             <div class="pass-info">
                 <h3>🎫 Selected Pass</h3>
                 <div class="event-item">
@@ -373,15 +358,14 @@ const generateRegistrationEmailTemplate = (
                 </div>
             </div>
             `
-                : ""
-            }
+      : ""
+    }
 
-            ${
-              !selectedPass &&
-              selectedEventDetails.length === 0 &&
-              selectedWorkshopDetails.length === 0 &&
-              selectedNonTechEventDetails.length === 0
-                ? `
+            ${!selectedPass &&
+      selectedEventDetails.length === 0 &&
+      selectedWorkshopDetails.length === 0 &&
+      selectedNonTechEventDetails.length === 0
+      ? `
             <div class="event-list">
                 <h3>🎪 Welcome to Tech Fiesta 2025!</h3>
                 <div class="event-item" style="background: #e8f4fd; border-left: 4px solid #2196f3;">
@@ -398,51 +382,47 @@ const generateRegistrationEmailTemplate = (
                 </div>
             </div>
             `
-                : ""
-            }
+      : ""
+    }
 
-            ${
-              selectedEventDetails.length > 0
-                ? `
+            ${selectedEventDetails.length > 0
+      ? `
             <div class="event-list">
                 <h3>🎯 Technical Events Registered</h3>
                 ${selectedEventDetails
-                  .map(
-                    (event) => `
+        .map(
+          (event) => `
                 <div class="event-item">
                     <strong>${event.title}</strong>
                     <div class="event-details">
                         <p>📅 <strong>Date:</strong> ${event.date}</p>
                         <p>🕒 <strong>Time:</strong> ${event.time}</p>
                         <p>📍 <strong>Venue:</strong> ${event.venue}</p>
-                        <p>📝 <strong>Description:</strong> ${
-                          event.description
-                        }</p>
-                        ${
-                          event.speakers
-                            ? `<p>👨‍🏫 <strong>Speakers:</strong> ${event.speakers.join(
-                                ", "
-                              )}</p>`
-                            : ""
-                        }
+                        <p>📝 <strong>Description:</strong> ${event.description
+            }</p>
+                        ${event.speakers
+              ? `<p>👨‍🏫 <strong>Speakers:</strong> ${event.speakers.join(
+                ", "
+              )}</p>`
+              : ""
+            }
                     </div>
                 </div>
                 `
-                  )
-                  .join("")}
+        )
+        .join("")}
             </div>
             `
-                : ""
-            }
+      : ""
+    }
 
-            ${
-              selectedWorkshopDetails.length > 0
-                ? `
+            ${selectedWorkshopDetails.length > 0
+      ? `
             <div class="event-list">
                 <h3>🛠️ Workshops Registered</h3>
                 ${selectedWorkshopDetails
-                  .map(
-                    (workshop) => `
+        .map(
+          (workshop) => `
                 <div class="event-item">
                     <strong>${workshop.title}</strong>
                     <div class="event-details">
@@ -456,24 +436,23 @@ const generateRegistrationEmailTemplate = (
                     </div>
                 </div>
                 `
-                  )
-                  .join("")}
+        )
+        .join("")}
             </div>
             `
-                : ""
-            }
+      : ""
+    }
 
-            ${
-              selectedNonTechEventDetails.length > 0
-                ? `
+            ${selectedNonTechEventDetails.length > 0
+      ? `
             <div class="event-list">
                 <h3>🎨 Non-Technical Events Registered</h3>
                 <p style="background: #fff3cd; padding: 10px; border-radius: 5px; color: #856404; margin-bottom: 15px;">
                     <strong>📢 Important:</strong> Payment for non-technical events is required at the venue on the day of the event.
                 </p>
                 ${selectedNonTechEventDetails
-                  .map(
-                    (event) => `
+        .map(
+          (event) => `
                 <div class="event-item">
                     <strong>${event.title}</strong>
                     <div class="event-details">
@@ -485,12 +464,12 @@ const generateRegistrationEmailTemplate = (
                     </div>
                 </div>
                 `
-                  )
-                  .join("")}
+        )
+        .join("")}
             </div>
             `
-                : ""
-            }
+      : ""
+    }
 
             <div class="registration-details">
                 <h3>📋 Important Instructions</h3>
@@ -579,9 +558,8 @@ Tech Fiesta 2025 - Registration Confirmed
 Registration ID: ${registrationData.registrationId}
 Email: ${registrationData.userEmail}
 Amount Paid: ₹${registrationData.paymentDetails?.amount || 0}
-Payment ID: ${
-            registrationData.paymentDetails?.paymentId || "N/A (Free Registration)"
-          }
+Payment ID: ${registrationData.paymentDetails?.paymentId || "N/A (Free Registration)"
+            }
 
 Your registration has been confirmed successfully!
 Please save this email for your records and bring it to events for verification.
@@ -644,9 +622,8 @@ Tech Fiesta 2025 - Registration Confirmed
 Registration ID: ${registrationData.registrationId}
 Email: ${registrationData.userEmail}
 Amount Paid: ₹${registrationData.paymentDetails?.amount || 0}
-Payment ID: ${
-        registrationData.paymentDetails?.paymentId || "N/A (Free Registration)"
-      }
+Payment ID: ${registrationData.paymentDetails?.paymentId || "N/A (Free Registration)"
+        }
 
 Your registration has been confirmed successfully!
 Please save this email for your records and bring it to events for verification.
@@ -718,7 +695,7 @@ const sendNotificationEmail = async (to, subject, htmlContent, textContent) => {
       const senderEmail = process.env.BREVO_SENDER_EMAIL || "vimanexample@gmail.com";
       const senderName = process.env.BREVO_SENDER_NAME || "Tech Fiesta Team";
       console.log(`📤 Sending notification email via Brevo HTTP API...`);
-      
+
       const response = await fetch("https://api.brevo.com/v3/smtp/email", {
         method: "POST",
         headers: {
@@ -888,31 +865,27 @@ const logEmailTemplateInfo = (registrationData, events, workshops) => {
   console.log(`  Registration ID: ${registrationData.registrationId}`);
   console.log(`  User Email: ${registrationData.userEmail}`);
   console.log(
-    `  User Name: ${
-      registrationData.userDetails?.name ||
-      registrationData.name ||
-      "Not provided"
+    `  User Name: ${registrationData.userDetails?.name ||
+    registrationData.name ||
+    "Not provided"
     }`
   );
   console.log(
-    `  User College: ${
-      registrationData.userDetails?.college ||
-      registrationData.college ||
-      "Not provided"
+    `  User College: ${registrationData.userDetails?.college ||
+    registrationData.college ||
+    "Not provided"
     }`
   );
   console.log(
-    `  User Department: ${
-      registrationData.userDetails?.department ||
-      registrationData.department ||
-      "Not provided"
+    `  User Department: ${registrationData.userDetails?.department ||
+    registrationData.department ||
+    "Not provided"
     }`
   );
   console.log(
-    `  User WhatsApp: ${
-      registrationData.userDetails?.whatsapp ||
-      registrationData.whatsapp ||
-      "Not provided"
+    `  User WhatsApp: ${registrationData.userDetails?.whatsapp ||
+    registrationData.whatsapp ||
+    "Not provided"
     }`
   );
   console.log(
@@ -931,13 +904,11 @@ const logEmailTemplateInfo = (registrationData, events, workshops) => {
     `  Selected Events: ${registrationData.selectedEvents?.length || 0} events`
   );
   console.log(
-    `  Selected Workshops: ${
-      registrationData.selectedWorkshops?.length || 0
+    `  Selected Workshops: ${registrationData.selectedWorkshops?.length || 0
     } workshops`
   );
   console.log(
-    `  Selected Non-Tech Events: ${
-      registrationData.selectedNonTechEvents?.length || 0
+    `  Selected Non-Tech Events: ${registrationData.selectedNonTechEvents?.length || 0
     } events`
   );
 

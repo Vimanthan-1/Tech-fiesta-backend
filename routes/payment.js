@@ -74,10 +74,10 @@ router.post("/create-order", verifyToken, async (req, res) => {
           registrationData.selectedEvents.forEach((se) => {
             const event = events.find((e) => e.id === se.id);
             if (event && event.price) {
-              const priceStr = isCIT && event.citPrice ? event.citPrice : event.price;
+              const priceStr = event.price;
               prices.push(parseInt(priceStr.replace("₹", "")));
             } else {
-              prices.push(isCIT ? 59 : 99);
+              prices.push(99);
             }
           });
         }
@@ -118,11 +118,11 @@ router.post("/create-order", verifyToken, async (req, res) => {
         registrationData.selectedEvents.forEach((selectedEvent) => {
           const event = events.find((e) => e.id === selectedEvent.id);
           if (event && event.price) {
-            const priceStr = isCIT && event.citPrice ? event.citPrice : event.price;
+            const priceStr = event.price;
             totalAmount += parseInt(priceStr.replace("₹", ""));
           } else {
             // Fallback to original hardcoded values if event data is not found
-            totalAmount += isCIT ? 59 : 99;
+            totalAmount += 99;
           }
         });
       }

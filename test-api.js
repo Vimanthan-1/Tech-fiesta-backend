@@ -17,11 +17,10 @@ async function testAPI() {
     const eventsData = await eventsResponse.json();
     console.log(`✅ Events loaded: ${eventsData.data.length} events`);
 
-    // Show sample event with CIT pricing
+    // Show sample event
     const sampleEvent = eventsData.data[0];
     console.log(`   Sample event: ${sampleEvent.title}`);
-    console.log(`   Regular price: ${sampleEvent.price}`);
-    console.log(`   CIT price: ${sampleEvent.citPrice}`);
+    console.log(`   Price: ${sampleEvent.price}`);
 
     // Test workshops endpoint
     console.log("\n3. Testing workshops endpoint...");
@@ -29,11 +28,10 @@ async function testAPI() {
     const workshopsData = await workshopsResponse.json();
     console.log(`✅ Workshops loaded: ${workshopsData.data.length} workshops`);
 
-    // Show sample workshop with CIT pricing
+    // Show sample workshop
     const sampleWorkshop = workshopsData.data[0];
     console.log(`   Sample workshop: ${sampleWorkshop.title}`);
-    console.log(`   Regular price: ${sampleWorkshop.price}`);
-    console.log(`   CIT price: ${sampleWorkshop.citPrice}`);
+    console.log(`   Price: ${sampleWorkshop.price}`);
 
     // Test specific endpoints
     console.log("\n4. Testing specific endpoints...");

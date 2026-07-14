@@ -14,7 +14,6 @@ const passes = [
       "Certificates for all participated events",
     ],
     price: "₹149",
-    citPrice: "₹149",
     terms: [
       "Pass is valid for the entire Tech Fiesta 2025 duration",
       "Includes 1 workshop + option to select up to 4 additional workshops",

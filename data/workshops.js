@@ -11,7 +11,6 @@ const workshops = [
     prerequisites: ["Basic computer knowledge", "Interest in 3D design"],
     materials: ["Laptop", "Blender installed", "Mouse recommended"],
     price: "₹100",
-    citPrice: "₹100",
     tags: ["Blender", "3D Modeling", "Web Integration", "Visualization"],
     syllabus: [
       "Introduction to 3D modeling concepts using Blender",
@@ -37,7 +36,6 @@ const workshops = [
     ],
     materials: ["Laptop", "Security tools access", "Case study materials"],
     price: "₹100",
-    citPrice: "₹100",
     tags: ["Automotive Security", "OEM", "Vehicle Systems", "Cyber Threats"],
     syllabus: [
       "Understanding cybersecurity challenges in automotive OEMs",
@@ -59,7 +57,6 @@ const workshops = [
     prerequisites: ["Python programming", "Basic statistics knowledge"],
     materials: ["Laptop", "Python environment", "Jupyter notebooks"],
     price: "₹100",
-    citPrice: "₹100",
     tags: ["Machine Learning", "Model Training", "Python", "Algorithms"],
     syllabus: [
       "Overview of key machine learning algorithms",
@@ -81,7 +78,6 @@ const workshops = [
     prerequisites: ["Basic HTML/CSS knowledge", "Programming fundamentals"],
     materials: ["Laptop", "Code editor", "Modern web browser"],
     price: "₹100",
-    citPrice: "₹100",
     tags: [
       "Web Development",
       "Responsive Design",
@@ -112,7 +108,6 @@ const workshops = [
     ],
     materials: ["Laptop", "Cloud platform access", "Terminal/CLI tools"],
     price: "₹100",
-    citPrice: "₹100",
     tags: ["Cloud Computing", "DevSecOps", "Security", "Automation"],
     syllabus: [
       "Introduction to cloud computing concepts",
@@ -138,7 +133,6 @@ const workshops = [
     ],
     materials: ["Laptop", "Internet access"],
     price: "₹100",
-    citPrice: "₹100",
     tags: ["PersonalFinance", "Investing", "FinTech"],
     syllabus: [
       "Introduction to FinTech and its impact on finance",
