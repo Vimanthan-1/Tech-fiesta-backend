@@ -11,7 +11,7 @@ const events = [
     description:
       "Participants present innovative technical ideas, research work, or project concepts before a panel of judges. Evaluation is based on originality, technical depth, presentation skills, and clarity of explanation.",
     tags: ["Presentation", "Research", "Innovation"],
-    price: "₹1",
+    price: "₹70",
     maxTeamSize: 2,
   },
   {
@@ -24,7 +24,7 @@ const events = [
     description:
       "A multi-round competition featuring technical quizzes, logical reasoning, debugging tasks, coding rounds, and surprise challenges. Teams are eliminated round by round until only one team survives.",
     tags: ["Quiz", "Coding", "Debugging", "Logic"],
-    price: "₹1",
+    price: "₹70",
     maxTeamSize: 3,
   },
   {
@@ -44,7 +44,7 @@ const events = [
       "Design Sprint",
       "Product Thinking"
     ],
-    price: "₹1",
+    price: "₹70",
     maxTeamSize: 3,
   },
   {
