@@ -22,10 +22,10 @@ const events = [
     time: "10:00 AM - 4:00 PM",
     venue: "Programming Lab",
     description:
-      "A multi-round competition featuring technical quizzes, logical reasoning, debugging tasks, coding rounds, and surprise challenges. Teams are eliminated round by round until only one team survives.",
+      "A multi-round competition featuring technical quizzes, logical reasoning, debugging tasks, coding rounds, and surprise challenges. Participants are eliminated round by round until only one survivor remains.",
     tags: ["Quiz", "Coding", "Debugging", "Logic"],
     price: "₹70",
-    maxTeamSize: 3,
+    maxTeamSize: 1,
   },
   {
     id: 3,
@@ -46,6 +46,7 @@ const events = [
     ],
     price: "₹70",
     maxTeamSize: 3,
+    minTeamSize: 2,
   },
   {
     id: 4,
@@ -58,7 +59,7 @@ const events = [
       "A common coding challenge open to all skill levels. Participants solve a curated set of programming problems covering fundamental data structures, algorithms, and logic. Race against time and peers to achieve the highest score and claim the top spot on the leaderboard.",
     tags: ["Coding", "Algorithms", "Data Structures", "Competition"],
     price: "₹70",
-    maxTeamSize: 4,
+    maxTeamSize: 1,
   },
   {
     id: 5,
@@ -71,7 +72,7 @@ const events = [
       "An AR and QR based cyber treasure hunt where participants solve coding puzzles, encrypted clues, cybersecurity challenges, hidden website tasks, and AR missions across the campus.",
     tags: ["Cybersecurity", "AR", "QR", "Treasure Hunt"],
     price: "₹70",
-    maxTeamSize: 3,
+    maxTeamSize: 4,
   },
   {
     id: 6,
@@ -81,10 +82,10 @@ const events = [
     time: "2:00 PM - 4:00 PM",
     venue: "Seminar Hall",
     description:
-      "Participants debate trending technology topics such as AI, cybersecurity, startups, coding culture, social media, and future technologies. The event focuses on critical thinking, communication, technical awareness, and teamwork.",
+      "Participants debate trending technology topics such as AI, cybersecurity, startups, coding culture, social media, and future technologies. The event focuses on critical thinking, communication, and technical awareness.",
     tags: ["Debate", "Technology", "Communication"],
     price: "₹70",
-    maxTeamSize: 2,
+    maxTeamSize: 1,
   },
 
   // Non-Technical Events
@@ -126,6 +127,7 @@ const events = [
     tags: ["Music", "Lyrics", "Team Event"],
     price: "₹50",
     maxTeamSize: 4,
+    minTeamSize: 1,
   },
   {
     id: 10,
@@ -139,6 +141,7 @@ const events = [
     tags: ["Mystery", "Investigation", "Teamwork"],
     price: "₹50",
     maxTeamSize: 4,
+    minTeamSize: 1,
   },
   {
     id: 11,
@@ -152,6 +155,7 @@ const events = [
     tags: ["Wikipedia", "Navigation", "Strategy"],
     price: "₹50",
     maxTeamSize: 2,
+    minTeamSize: 1,
   },
   {
     id: 12,
@@ -165,6 +169,7 @@ const events = [
     tags: ["Marketing", "Creativity", "Performance"],
     price: "₹50",
     maxTeamSize: 4,
+    minTeamSize: 4,
   },
 ];
 
