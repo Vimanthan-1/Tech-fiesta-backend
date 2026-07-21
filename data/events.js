@@ -1,4 +1,4 @@
-// Tech Fiesta 2025 Events
+// Tech Fiesta 2026 Events
 const events = [
   // Technical Events
   {

@@ -1,13 +1,12 @@
-// Tech Fiesta 2025 Passes
+// Tech Fiesta 2026 Passes
 const passes = [
   {
     id: 1,
-    title: "Tech Fiesta General Pass",
-    description: "The ultimate Tech Fiesta experience! Get unlimited access to all technical events plus workshop selections.",
+    title: "Tech Fiesta Combo Pass",
+    description: "Register for any 3 events or workshops at a discounted flat rate of ₹149. Additional registrations beyond 3 are charged at standard individual rates.",
     benefits: [
-      "Unlimited access to ALL technical events",
-      "1 workshop included in pass price",
-      "Select up to 4 additional workshops", 
+      "Any 3 event/workshop registrations included",
+      "Mix and match: tech events, workshops, or non-tech events",
       "Priority seating in all events",
       "Exclusive Tech Fiesta merchandise",
       "Access to networking sessions",
@@ -15,23 +14,22 @@ const passes = [
     ],
     price: "₹149",
     terms: [
-      "Pass is valid for the entire Tech Fiesta 2025 duration",
-      "Includes 1 workshop + option to select up to 4 additional workshops",
-      "Unlimited access to all technical events (no selection required)",
-      "Non-technical events require separate payment on arrival",
+      "Pass is valid for the entire Tech Fiesta 2026 duration",
+      "Includes any 3 registrations (events, workshops, or a mix of both)",
+      "Additional registrations beyond 3 are charged at standard individual rates",
       "Pass is non-transferable and non-refundable",
       "Valid ID required for pass verification",
     ],
     includes: [
-      "Unlimited access to all technical events",
-      "1 workshop included + up to 4 additional workshop selections", 
-      "Event materials and resources for all events",
+      "Any 3 event or workshop registrations",
+      "Event materials and resources for registered events",
       "Refreshments during break sessions",
       "Digital certificates for participated events",
       "Exclusive Tech Fiesta merchandise kit",
     ],
   },
 ];
+
 
 // Helper functions
 const getPassById = (id) => passes.find((pass) => pass.id === id);

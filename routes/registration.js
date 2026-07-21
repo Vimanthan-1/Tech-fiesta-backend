@@ -108,6 +108,21 @@ router.post("/submit", verifyToken, async (req, res) => {
     const formData = req.body;
     const userEmail = req.user.email || formData.email;
 
+    // Validate that at least one event or workshop is selected
+    const totalSelections = (formData.selectedEvents?.length || 0) + 
+                           (formData.selectedWorkshops?.length || 0) + 
+                           (formData.selectedNonTechEvents?.length || 0);
+    if (totalSelections === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "No events selected",
+        message: "Please select at least one event or workshop to register",
+      });
+    }
+
+    // Strip consent flag - should not be persisted in the database
+    delete formData.hasConsented;
+
     // Validate that the user is submitting their own registration (only if they have a non-anonymous email logged in)
     if (req.user.email && formData.email.toLowerCase() !== req.user.email.toLowerCase()) {
       return res.status(403).json({
@@ -239,7 +254,7 @@ router.post("/submit", verifyToken, async (req, res) => {
     // Paid registrations will need payment processing
     if (totalAmount === 0) {
       // Free registration - create record directly
-      const registrationId = `TF2025-${require("uuid")
+      const registrationId = `TF2026-${require("uuid")
         .v4()
         .substr(0, 8)
         .toUpperCase()}`;

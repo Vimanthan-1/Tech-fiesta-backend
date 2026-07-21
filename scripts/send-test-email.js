@@ -15,7 +15,7 @@ const { events } = require("../data/events");
 const { workshops } = require("../data/workshops");
 
 const testRegistration = {
-  registrationId: "TF2025-TEST0001",
+  registrationId: "TF2026-TEST0001",
   userEmail: "vimanexample@gmail.com",
   userDetails: {
     name: "Test User",

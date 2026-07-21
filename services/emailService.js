@@ -426,7 +426,7 @@ const generateRegistrationEmailTemplate = (
 <body>
     <div class="container">
         <div class="header">
-            <h2>Tech Fiesta 2025</h2>
+            <h2>Tech Fiesta 2026</h2>
             <h1>🎉 Registration Confirmed!</h1>
             <p>Chennai Institute of Technology</p>
             <div class="date-badge">📅 Event Date: 7th August</div>
@@ -543,7 +543,7 @@ const generateRegistrationEmailTemplate = (
               selectedNonTechEventDetails.length === 0
               ? `
                 <div class="card" style="background: #eff6ff; border: 1px solid #bfdbfe;">
-                    <div class="card-title" style="color: #1e40af; border-bottom-color: #bfdbfe;">🎪 Welcome to Tech Fiesta 2025!</div>
+                    <div class="card-title" style="color: #1e40af; border-bottom-color: #bfdbfe;">🎪 Welcome to Tech Fiesta 2026!</div>
                     <p style="margin: 0; font-size: 14px; color: #1e3a8a;">
                         Your registration has been completed successfully! You can still sign up for individual events:
                     </p>
@@ -637,9 +637,9 @@ const generateRegistrationEmailTemplate = (
         </div>
         
         <div class="footer">
-            <p>Thank you for participating in Tech Fiesta 2025!</p>
+            <p>Thank you for participating in Tech Fiesta 2026!</p>
             <p style="font-weight: 700; color: #334155;">Chennai Institute of Technology</p>
-            <p>© 2025 Tech Fiesta. All rights reserved.</p>
+            <p>© 2026 Tech Fiesta. All rights reserved.</p>
         </div>
     </div>
 </body>
@@ -694,10 +694,10 @@ const sendRegistrationConfirmationEmail = async (
               email: registrationData.userEmail
             }
           ],
-          subject: `🎉 Tech Fiesta 2025 - Registration Confirmed (${registrationData.registrationId})`,
+          subject: `🎉 Tech Fiesta 2026 - Registration Confirmed (${registrationData.registrationId})`,
           htmlContent: htmlContent,
           textContent: `
-Tech Fiesta 2025 - Registration Confirmed
+Tech Fiesta 2026 - Registration Confirmed
 
 Event Date: 7th August
 Registration ID: ${registrationData.registrationId}
@@ -759,10 +759,10 @@ For queries, contact: Asymmetric@citchennai.net
     const mailOptions = {
       from: fromAddress,
       to: registrationData.userEmail,
-      subject: `🎉 Tech Fiesta 2025 - Registration Confirmed (${registrationData.registrationId})`,
+      subject: `🎉 Tech Fiesta 2026 - Registration Confirmed (${registrationData.registrationId})`,
       html: htmlContent,
       text: `
-Tech Fiesta 2025 - Registration Confirmed
+Tech Fiesta 2026 - Registration Confirmed
 
 Registration ID: ${registrationData.registrationId}
 Email: ${registrationData.userEmail}

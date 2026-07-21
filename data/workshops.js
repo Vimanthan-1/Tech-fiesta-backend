@@ -1,4 +1,4 @@
-// Tech Fiesta 2025 Workshops
+// Tech Fiesta 2026 Workshops
 const workshops = [
   {
     id: 1,

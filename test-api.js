@@ -2,7 +2,7 @@
 const API_BASE_URL = "http://localhost:5000/api";
 
 async function testAPI() {
-  console.log("Testing Tech Fiesta 2025 API...\n");
+  console.log("Testing Tech Fiesta 2026 API...\n");
 
   try {
     // Test health endpoint

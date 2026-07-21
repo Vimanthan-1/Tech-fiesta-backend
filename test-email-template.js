@@ -6,7 +6,7 @@ const { workshops } = require("./data/workshops");
 
 // Test data that mimics the structure from registration route
 const testEmailData = {
-  registrationId: "TF2025-TEST123",
+  registrationId: "TF2026-TEST123",
   userEmail: "test@example.com",
   userName: "Test User",
   userDetails: {

@@ -16,18 +16,12 @@ const { workshops } = require("../data/workshops");
 const router = express.Router();
 
 // Pass limits configuration (should match frontend)
+// The pass covers any 3 registrations (events, workshops, or mix) for ₹149.
+// Additional items beyond 3 are charged at standard individual rates.
 const passLimits = [
   {
     passId: 1,
-    workshopsIncluded: 1,
-    maxAdditionalWorkshops: 4,
-    workshopSelectionEnabled: true,
-    techEventsIncluded: 6, // Unlimited
-    maxAdditionalTechEvents: 0,
-    techEventSelectionEnabled: false, // Disabled - unlimited access
-    nonTechEventsIncluded: 4,
-    maxAdditionalNonTechEvents: 0,
-    nonTechEventSelectionEnabled: false, // Disabled - pay on arrival
+    totalItemsIncluded: 3, // Any 3 events/workshops covered by pass price
   },
 ];
 
@@ -208,7 +202,7 @@ router.post("/create-order", verifyToken, async (req, res) => {
     const options = {
       amount: amount * 100, // Convert to paise - use calculated amount
       currency: currency,
-      receipt: receipt || `TF2025_${Date.now()}`,
+      receipt: receipt || `TF2026_${Date.now()}`,
       notes: {
         userEmail: userEmail,
         userId: req.user.uid,
@@ -396,7 +390,7 @@ router.post("/verify-payment", verifyToken, async (req, res) => {
 
     // Generate registration ID
     const { v4: uuidv4 } = require("uuid");
-    const registrationId = `TF2025-${uuidv4().substr(0, 8).toUpperCase()}`;
+    const registrationId = `TF2026-${uuidv4().substr(0, 8).toUpperCase()}`;
 
     // Create registration record with payment details
     const finalRegistrationData = {
@@ -797,11 +791,11 @@ router.post("/test-email", verifyToken, async (req, res) => {
       // Test simple notification email
       const result = await sendNotificationEmail(
         userEmail,
-        "🧪 Tech Fiesta 2025 - Email Service Test",
+        "🧪 Tech Fiesta 2026 - Email Service Test",
         `
         <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px;">
           <h2 style="color: #667eea;">Email Service Test</h2>
-          <p>This is a test email from the Tech Fiesta 2025 email service.</p>
+          <p>This is a test email from the Tech Fiesta 2026 email service.</p>
           <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
           <p><strong>Recipient:</strong> ${userEmail}</p>
           <p style="background: #f0f0f0; padding: 15px; border-radius: 5px;">
@@ -809,7 +803,7 @@ router.post("/test-email", verifyToken, async (req, res) => {
           </p>
         </div>
         `,
-        `Tech Fiesta 2025 - Email Service Test\n\nThis is a test email from the Tech Fiesta 2025 email service.\nTimestamp: ${new Date().toISOString()}\nRecipient: ${userEmail}\n\nEmail service is working correctly!`
+        `Tech Fiesta 2026 - Email Service Test\n\nThis is a test email from the Tech Fiesta 2026 email service.\nTimestamp: ${new Date().toISOString()}\nRecipient: ${userEmail}\n\nEmail service is working correctly!`
       );
 
       res.json({
