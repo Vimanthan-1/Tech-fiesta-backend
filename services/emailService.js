@@ -549,7 +549,6 @@ const generateRegistrationEmailTemplate = (
                     </p>
                     <div style="margin-top: 12px; font-size: 13px; color: #1e40af; line-height: 1.6;">
                         • <strong>Walk-in Registration:</strong> Available at the venue for most events<br>
-                        • <strong>Non-Tech Events:</strong> Register and pay at the venue on event day<br>
                         • <strong>General Pass:</strong> Purchase at the venue for unlimited access to tech events
                     </div>
                 </div>
@@ -619,7 +618,6 @@ const generateRegistrationEmailTemplate = (
                     <li style="margin-bottom: 6px;"><strong>Save this email</strong> - show the Registration ID at the desk.</li>
                     <li style="margin-bottom: 6px;">Bring your college **physical ID card** for quick validation.</li>
                     <li style="margin-bottom: 6px;">Arrive at the respective venues at least **15 minutes early**.</li>
-                    <li style="margin-bottom: 6px;">Walk-in and on-the-spot payments apply for any unpaid non-tech entries.</li>
                 </ul>
             </div>
 
