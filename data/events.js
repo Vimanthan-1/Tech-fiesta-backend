@@ -169,7 +169,7 @@ const events = [
     tags: ["Marketing", "Creativity", "Performance"],
     price: "₹50",
     maxTeamSize: 4,
-    minTeamSize: 4,
+    minTeamSize: 1,
   },
 ];
 
