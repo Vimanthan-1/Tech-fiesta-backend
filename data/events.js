@@ -5,7 +5,7 @@ const events = [
     id: 1,
     title: "Paper Presentation",
     type: "tech",
-    date: "2026-03-15",
+    date: "2026-08-07",
     time: "10:00 AM - 4:00 PM",
     venue: "Main Auditorium",
     description:
@@ -18,7 +18,7 @@ const events = [
     id: 2,
     title: "Tech Survivor – Elimination Arena",
     type: "tech",
-    date: "2026-03-16",
+    date: "2026-08-07",
     time: "10:00 AM - 4:00 PM",
     venue: "Programming Lab",
     description:
@@ -31,7 +31,7 @@ const events = [
     id: 3,
     title: "UI Challenge – Design the Future",
     type: "tech",
-    date: "2026-03-19",
+    date: "2026-08-07",
     time: "10:00 AM - 1:00 PM",
     venue: "Design Lab",
     description:
@@ -52,7 +52,7 @@ const events = [
     id: 4,
     title: "Common Coding Challenge",
     type: "tech",
-    date: "2026-03-17",
+    date: "2026-08-07",
     time: "11:00 AM - 1:00 PM",
     venue: "Programming Lab",
     description:
@@ -65,7 +65,7 @@ const events = [
     id: 5,
     title: "Hack The Campus",
     type: "tech",
-    date: "2026-03-18",
+    date: "2026-08-07",
     time: "9:00 AM - 3:00 PM",
     venue: "Campus Wide",
     description:
@@ -78,7 +78,7 @@ const events = [
     id: 6,
     title: "Tech Debate",
     type: "tech",
-    date: "2026-03-19",
+    date: "2026-08-07",
     time: "2:00 PM - 4:00 PM",
     venue: "Seminar Hall",
     description:
@@ -93,7 +93,7 @@ const events = [
     id: 7,
     title: "Chess Championship",
     type: "non-tech",
-    date: "2026-03-20",
+    date: "2026-08-07",
     time: "10:00 AM - 5:00 PM",
     venue: "Seminar Hall",
     description:
@@ -106,7 +106,7 @@ const events = [
     id: 8,
     title: "Best Meme Creation",
     type: "non-tech",
-    date: "2026-03-20",
+    date: "2026-08-07",
     time: "2:00 PM - 4:00 PM",
     venue: "Media Hall",
     description:
@@ -119,7 +119,7 @@ const events = [
     id: 9,
     title: "Missing Lyrics",
     type: "non-tech",
-    date: "2026-03-21",
+    date: "2026-08-07",
     time: "11:00 AM - 1:00 PM",
     venue: "Entertainment Hall",
     description:
@@ -133,7 +133,7 @@ const events = [
     id: 10,
     title: "Murder Mystery",
     type: "non-tech",
-    date: "2026-03-21",
+    date: "2026-08-07",
     time: "2:00 PM - 5:00 PM",
     venue: "Activity Hall",
     description:
@@ -147,7 +147,7 @@ const events = [
     id: 11,
     title: "Wiki Surfers",
     type: "non-tech",
-    date: "2026-03-22",
+    date: "2026-08-07",
     time: "10:00 AM - 12:00 PM",
     venue: "Computer Lab",
     description:
@@ -161,7 +161,7 @@ const events = [
     id: 12,
     title: "Adzap",
     type: "non-tech",
-    date: "2026-03-22",
+    date: "2026-08-07",
     time: "2:00 PM - 4:00 PM",
     venue: "Main Auditorium",
     description:
