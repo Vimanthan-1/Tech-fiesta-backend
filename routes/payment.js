@@ -614,8 +614,279 @@ router.get("/status/:orderId", verifyToken, async (req, res) => {
   }
 });
 
-// Note: Webhooks removed - using client-side verification only
-// This simplifies deployment but requires users to complete the payment flow
+// Razorpay webhook endpoint — safety net for payment verification
+// This catches payments where the browser closed before client-side /verify-payment could fire.
+// No auth token required — Razorpay calls this server-to-server.
+// Raw body parsing is already configured in server.js for this route.
+router.post("/webhook", async (req, res) => {
+  try {
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+
+    // If webhook secret is not configured, acknowledge but skip processing
+    if (!webhookSecret) {
+      console.warn("⚠️ Webhook received but RAZORPAY_WEBHOOK_SECRET is not configured. Ignoring.");
+      return res.status(200).json({ status: "ignored", reason: "Webhook secret not configured" });
+    }
+
+    // Verify webhook signature
+    const receivedSignature = req.headers["x-razorpay-signature"];
+    if (!receivedSignature) {
+      console.error("❌ Webhook: Missing x-razorpay-signature header");
+      return res.status(400).json({ status: "error", reason: "Missing signature" });
+    }
+
+    // req.body is a raw Buffer because of express.raw() middleware in server.js
+    const rawBody = typeof req.body === "string" ? req.body : req.body.toString("utf8");
+
+    const expectedSignature = crypto
+      .createHmac("sha256", webhookSecret)
+      .update(rawBody)
+      .digest("hex");
+
+    if (expectedSignature !== receivedSignature) {
+      console.error("❌ Webhook: Signature verification failed");
+      return res.status(400).json({ status: "error", reason: "Invalid signature" });
+    }
+
+    // Parse the webhook payload
+    const payload = JSON.parse(rawBody);
+    const eventType = payload.event;
+
+    console.log(`🔔 Webhook received: ${eventType}`);
+
+    // Only process payment.captured events
+    if (eventType !== "payment.captured") {
+      console.log(`ℹ️ Webhook: Ignoring event type "${eventType}"`);
+      return res.status(200).json({ status: "ok", event: eventType, action: "ignored" });
+    }
+
+    const paymentEntity = payload.payload?.payment?.entity;
+    if (!paymentEntity) {
+      console.error("❌ Webhook: Missing payment entity in payload");
+      return res.status(200).json({ status: "ok", reason: "Missing payment entity" });
+    }
+
+    const razorpayOrderId = paymentEntity.order_id;
+    const razorpayPaymentId = paymentEntity.id;
+    const capturedAmount = paymentEntity.amount; // in paise
+
+    console.log(`🔔 Webhook: payment.captured for order ${razorpayOrderId}, payment ${razorpayPaymentId}, amount ₹${capturedAmount / 100}`);
+
+    // Look up the payment order in Firestore
+    const db = admin.firestore();
+    const orderRef = db.collection("payment_orders").doc(razorpayOrderId);
+    const orderDoc = await orderRef.get();
+
+    if (!orderDoc.exists) {
+      console.warn(`⚠️ Webhook: Order ${razorpayOrderId} not found in Firestore. Possibly not created by our system.`);
+      return res.status(200).json({ status: "ok", reason: "Order not found in our system" });
+    }
+
+    const orderData = orderDoc.data();
+
+    // DUPLICATE PROTECTION: If registration already exists, skip (client-side already handled it)
+    if (orderData.registrationId) {
+      console.log(`ℹ️ Webhook: Registration ${orderData.registrationId} already exists for order ${razorpayOrderId}. Client-side verification already completed. Skipping.`);
+      return res.status(200).json({
+        status: "ok",
+        action: "skipped",
+        reason: "Registration already exists",
+        registrationId: orderData.registrationId,
+      });
+    }
+
+    // Use a Firestore transaction to atomically check-and-set registrationId
+    // This prevents the race condition where webhook and client-side /verify-payment fire simultaneously
+    const { v4: uuidv4 } = require("uuid");
+    const registrationId = `TF2026-${uuidv4().substr(0, 8).toUpperCase()}`;
+
+    const transactionResult = await db.runTransaction(async (transaction) => {
+      const freshOrderDoc = await transaction.get(orderRef);
+      const freshOrderData = freshOrderDoc.data();
+
+      // Double-check inside transaction — another process may have completed it
+      if (freshOrderData.registrationId) {
+        console.log(`ℹ️ Webhook transaction: Registration ${freshOrderData.registrationId} was created by another process. Skipping.`);
+        return { alreadyExists: true, registrationId: freshOrderData.registrationId };
+      }
+
+      // Build registration data from the stored registrationData on the payment order
+      const registrationData = freshOrderData.registrationData || {};
+      const userEmail = freshOrderData.userEmail || registrationData.email;
+
+      const finalRegistrationData = {
+        registrationId,
+        ...registrationData,
+        paymentDetails: {
+          orderId: razorpayOrderId,
+          paymentId: razorpayPaymentId,
+          amount: freshOrderData.amount,
+          currency: freshOrderData.currency || "INR",
+          status: "paid",
+          paidAt: admin.firestore.Timestamp.now(),
+          verificationMethod: "webhook", // Distinguishes from client-side verification
+        },
+        status: "confirmed",
+        paymentStatus: "verified",
+        emailSent: false,
+        createdAt: admin.firestore.Timestamp.now(),
+        updatedAt: admin.firestore.Timestamp.now(),
+        userId: freshOrderData.userId || null,
+        userEmail: userEmail,
+
+        // Admin tracking fields
+        arrivalStatus: {
+          hasArrived: false,
+          arrivalTime: null,
+          checkedInBy: null,
+          notes: "",
+        },
+
+        // Workshop details for pass holders
+        workshopDetails: {
+          selectedWorkshop: registrationData.selectedPass
+            ? (registrationData.selectedWorkshops?.[0]?.id || null)
+            : null,
+          workshopTitle: registrationData.selectedPass
+            ? (registrationData.selectedWorkshops?.[0]?.title || "")
+            : "",
+          canEditWorkshop: !!registrationData.selectedPass,
+          workshopAttended: false,
+          workshopAttendanceTime: null,
+        },
+
+        // Event attendance tracking
+        eventAttendance: {
+          techEvents: (registrationData.selectedEvents || []).map((event) => ({
+            eventId: event.id,
+            eventTitle: event.title,
+            attended: false,
+            attendanceTime: null,
+            notes: "",
+          })),
+          workshops: (registrationData.selectedWorkshops || []).map((workshop) => ({
+            workshopId: workshop.id,
+            workshopTitle: workshop.title,
+            attended: false,
+            attendanceTime: null,
+            notes: "",
+          })),
+          nonTechEvents: (registrationData.selectedNonTechEvents || []).map((event) => ({
+            eventId: event.id,
+            eventTitle: event.title,
+            attended: false,
+            attendanceTime: null,
+            paidOnArrival: false,
+            amountPaid: 0,
+            notes: "",
+          })),
+        },
+
+        // Admin notes and flags
+        adminNotes: {
+          generalNotes: "",
+          specialRequirements: "",
+          flagged: false,
+          flagReason: "",
+          lastModifiedBy: null,
+          lastModifiedAt: null,
+        },
+
+        // Contact and emergency details
+        contactDetails: {
+          emergencyContact: "",
+          emergencyPhone: "",
+          dietaryRestrictions: "",
+          accessibility: "",
+        },
+      };
+
+      // Create registration document
+      const registrationRef = db.collection("registrations").doc();
+      transaction.set(registrationRef, finalRegistrationData);
+
+      // Update payment order status
+      transaction.update(orderRef, {
+        status: "completed",
+        paymentId: razorpayPaymentId,
+        registrationId,
+        completedAt: admin.firestore.Timestamp.now(),
+        verifiedVia: "webhook",
+      });
+
+      return { alreadyExists: false, registrationId, registrationRef, finalRegistrationData };
+    });
+
+    if (transactionResult.alreadyExists) {
+      return res.status(200).json({
+        status: "ok",
+        action: "skipped",
+        reason: "Registration created by another process",
+        registrationId: transactionResult.registrationId,
+      });
+    }
+
+    console.log(`✅ Webhook: Registration ${registrationId} created for order ${razorpayOrderId}`);
+
+    // Respond 200 to Razorpay immediately
+    res.status(200).json({
+      status: "ok",
+      action: "registration_created",
+      registrationId,
+    });
+
+    // Send confirmation email in background (fire-and-forget, same as client-side flow)
+    setImmediate(async () => {
+      try {
+        const emailResult = await sendRegistrationConfirmationEmail(
+          transactionResult.finalRegistrationData,
+          events,
+          workshops
+        );
+
+        if (emailResult.success) {
+          console.log(`✅ Webhook: Confirmation email sent to ${transactionResult.finalRegistrationData.userEmail || transactionResult.finalRegistrationData.email}`);
+          // Update emailSent status — use the registration doc path from the transaction
+          try {
+            const db2 = admin.firestore();
+            const regQuery = db2.collection("registrations").where("registrationId", "==", registrationId);
+            const regSnapshot = await regQuery.get();
+            if (!regSnapshot.empty) {
+              await regSnapshot.docs[0].ref.update({
+                emailSent: true,
+                emailSentAt: admin.firestore.FieldValue.serverTimestamp(),
+              });
+            }
+          } catch (updateErr) {
+            console.error("⚠️ Webhook: Failed to update emailSent flag:", updateErr.message);
+          }
+        } else {
+          console.error(`❌ Webhook: Failed to send confirmation email:`, emailResult.error);
+          try {
+            const db2 = admin.firestore();
+            const regQuery = db2.collection("registrations").where("registrationId", "==", registrationId);
+            const regSnapshot = await regQuery.get();
+            if (!regSnapshot.empty) {
+              await regSnapshot.docs[0].ref.update({
+                emailSent: false,
+                emailSendError: emailResult.error?.message || String(emailResult.error),
+              });
+            }
+          } catch (updateErr) {
+            console.error("⚠️ Webhook: Failed to update emailSendError flag:", updateErr.message);
+          }
+        }
+      } catch (emailError) {
+        console.error("❌ Webhook: Error sending confirmation email (background):", emailError);
+      }
+    });
+
+  } catch (error) {
+    console.error("❌ Webhook: Unexpected error:", error);
+    // Always return 200 to Razorpay to prevent retry floods on our errors
+    res.status(200).json({ status: "error", reason: "Internal server error" });
+  }
+});
 
 // Get payment warnings for frontend display
 router.get("/payment-warnings", (req, res) => {
