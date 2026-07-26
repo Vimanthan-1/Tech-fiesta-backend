@@ -18,7 +18,7 @@ const workshops = [
       "Interest in distributed systems",
     ],
     materials: ["Laptop", "Python Environment", "Workshop Resources"],
-    capacity: 100,
+    capacity: 80,
     registrations: 0,
     price: "₹101",
     tags: [
@@ -61,7 +61,7 @@ const workshops = [
       "OpenCV Setup",
       "Workshop Manual",
     ],
-    capacity: 93,
+    capacity: 80,
     registrations: 0,
     price: "₹101",
     tags: [
@@ -104,7 +104,7 @@ const workshops = [
       "Cloud Access",
       "Workshop Resources",
     ],
-    capacity: 100,
+    capacity: 80,
     registrations: 0,
     price: "₹101",
     tags: [
@@ -146,7 +146,7 @@ const workshops = [
       "Virtualization Environment",
       "Workshop Resources",
     ],
-    capacity: 100,
+    capacity: 80,
     registrations: 0,
     price: "₹101",
     tags: [
@@ -188,7 +188,7 @@ const workshops = [
       "Blockchain Test Network Access",
       "Workshop Resources",
     ],
-    capacity: 100,
+    capacity: 80,
     registrations: 0,
     price: "₹101",
     tags: [
