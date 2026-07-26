@@ -429,7 +429,7 @@ const generateRegistrationEmailTemplate = (
             <h2>Tech Fiesta 2026</h2>
             <h1>🎉 Registration Confirmed!</h1>
             <p>Chennai Institute of Technology</p>
-            <div class="date-badge">📅 Event Date: 7th August</div>
+            <div class="date-badge">📅 Event Date: 7th August 2026</div>
         </div>
         
         <div class="content">
@@ -563,7 +563,7 @@ const generateRegistrationEmailTemplate = (
                     ${selectedEventDetails.map((event) => `
                         <div class="event-card">
                             <div class="event-title">${event.title}</div>
-                            <div class="event-meta">📅 <strong>Date:</strong> 7th August</div>
+                            <div class="event-meta">📅 <strong>Date:</strong> 7th August 2026</div>
                             <div class="event-meta">🕒 <strong>Time:</strong> ${event.time}</div>
                             <div class="event-meta">📍 <strong>Venue:</strong> ${event.venue}</div>
                             <p class="event-desc">${event.description}</p>
@@ -581,7 +581,7 @@ const generateRegistrationEmailTemplate = (
                     ${selectedWorkshopDetails.map((workshop) => `
                         <div class="event-card" style="border-left: 4px solid #10b981;">
                             <div class="event-title">${workshop.title}</div>
-                            <div class="event-meta">📅 <strong>Date:</strong> 7th August</div>
+                            <div class="event-meta">📅 <strong>Date:</strong> 7th August 2026</div>
                             <div class="event-meta">🕒 <strong>Time:</strong> ${workshop.time}</div>
                             <div class="event-meta">📍 <strong>Venue:</strong> ${workshop.venue}</div>
                             <div class="event-meta">👨‍🏫 <strong>Instructor:</strong> ${workshop.instructor}</div>
@@ -601,7 +601,7 @@ const generateRegistrationEmailTemplate = (
                     ${selectedNonTechEventDetails.map((event) => `
                         <div class="event-card" style="border-left: 4px solid #f59e0b;">
                             <div class="event-title">${event.title}</div>
-                            <div class="event-meta">📅 <strong>Date:</strong> 7th August</div>
+                            <div class="event-meta">📅 <strong>Date:</strong> 7th August 2026</div>
                             <div class="event-meta">🕒 <strong>Time:</strong> ${event.time}</div>
                             <div class="event-meta">📍 <strong>Venue:</strong> ${event.venue}</div>
                             <p class="event-desc">${event.description}</p>
@@ -697,7 +697,7 @@ const sendRegistrationConfirmationEmail = async (
           textContent: `
 Tech Fiesta 2026 - Registration Confirmed
 
-Event Date: 7th August
+Event Date: 7th August 2026
 Registration ID: ${registrationData.registrationId}
 Email: ${registrationData.userEmail}
 Amount Paid: ₹${registrationData.paymentDetails?.amount || 0}
@@ -762,6 +762,7 @@ For queries, contact: Asymmetric@citchennai.net
       text: `
 Tech Fiesta 2026 - Registration Confirmed
 
+Event Date: 7th August 2026
 Registration ID: ${registrationData.registrationId}
 Email: ${registrationData.userEmail}
 Amount Paid: ₹${registrationData.paymentDetails?.amount || 0}

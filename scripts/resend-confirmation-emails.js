@@ -43,6 +43,9 @@ const args = process.argv.slice(2);
 const isDryRun = args.includes("--dry-run");
 const testEmailIndex = args.indexOf("--test-email");
 const testEmail = testEmailIndex !== -1 ? args[testEmailIndex + 1] : null;
+const beforeDateIndex = args.indexOf("--before-date");
+const beforeDateStr = beforeDateIndex !== -1 ? args[beforeDateIndex + 1] : null;
+const beforeDate = beforeDateStr ? new Date(beforeDateStr) : null;
 
 // Delay between emails (ms) to avoid rate limits
 const DELAY_BETWEEN_EMAILS_MS = 2000; // 2 seconds
@@ -64,6 +67,10 @@ async function resendAllEmails() {
 
   if (testEmail) {
     console.log(`🎯 FILTER: Only sending to ${testEmail}\n`);
+  }
+
+  if (beforeDate) {
+    console.log(`📅 FILTER: Only sending to registrations created on or before ${beforeDate.toISOString()}\n`);
   }
 
   try {
@@ -98,6 +105,23 @@ async function resendAllEmails() {
 
       if (registrations.length === 0) {
         console.log(`⚠️  No registrations found for ${testEmail}. Exiting.`);
+        process.exit(0);
+      }
+    }
+
+    // Filter by date if specified
+    if (beforeDate) {
+      registrations = registrations.filter((reg) => {
+        if (!reg.createdAt) return false;
+        const regDate = reg.createdAt.toDate ? reg.createdAt.toDate() : new Date(reg.createdAt);
+        return regDate <= beforeDate;
+      });
+      console.log(
+        `📅 Filtered to ${registrations.length} registration(s) created on or before ${beforeDate.toISOString()}\n`
+      );
+
+      if (registrations.length === 0) {
+        console.log(`⚠️  No registrations found matching the date filter. Exiting.`);
         process.exit(0);
       }
     }
