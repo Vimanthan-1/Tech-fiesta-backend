@@ -13,7 +13,7 @@ const events = [
     tags: ["Presentation", "Research", "Innovation"],
     price: "₹70",
     maxTeamSize: 2,
-    capacity: 60,
+    capacity: 51,
   },
   {
     id: 2,
