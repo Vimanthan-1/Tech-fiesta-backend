@@ -7,6 +7,7 @@ const {
 } = require("../services/emailService");
 const { events } = require("../data/events");
 const { workshops } = require("../data/workshops");
+const { getRegistrationStats } = require("./stats");
 
 // Middleware to verify Firebase ID token
 const verifyToken = async (req, res, next) => {
@@ -129,6 +130,49 @@ router.post("/submit", verifyToken, async (req, res) => {
         success: false,
         error: "Forbidden",
         message: "You can only submit registration for your own email address",
+      });
+    }
+
+    // Validate capacities before proceeding
+    const stats = await getRegistrationStats();
+    let capacityError = null;
+
+    if (formData.selectedEvents) {
+      for (const se of formData.selectedEvents) {
+        const eventData = events.find((e) => e.id === se.id);
+        const count = stats.events[se.id] || 0;
+        if (eventData && eventData.capacity && count >= eventData.capacity) {
+          capacityError = `Event "${eventData.title}" is already sold out.`;
+        }
+      }
+    }
+    
+    if (formData.selectedNonTechEvents) {
+      for (const se of formData.selectedNonTechEvents) {
+        const eventData = events.find((e) => e.id === se.id);
+        const count = stats.nonTechEvents[se.id] || 0;
+        if (eventData && eventData.capacity && count >= eventData.capacity) {
+          capacityError = `Event "${eventData.title}" is already sold out.`;
+        }
+      }
+    }
+    
+    if (formData.selectedWorkshops) {
+      const workshopsData = require("../data/workshops").workshops;
+      for (const sw of formData.selectedWorkshops) {
+        const workshopData = workshopsData.find((w) => w.id === sw.id);
+        const count = stats.workshops[sw.id] || 0;
+        if (workshopData && workshopData.capacity && count >= workshopData.capacity) {
+          capacityError = `Workshop "${workshopData.title}" is already sold out.`;
+        }
+      }
+    }
+
+    if (capacityError) {
+      return res.status(400).json({
+        success: false,
+        error: "Capacity Reached",
+        message: capacityError,
       });
     }
 

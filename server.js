@@ -71,6 +71,7 @@ const passRoutes = require("./routes/passes");
 const registrationRoutes = require("./routes/registration");
 const paymentRoutes = require("./routes/payment");
 const contactRoutes = require("./routes/contact");
+const { router: statsRoutes } = require("./routes/stats");
 
 // Routes
 app.use("/api/events", eventRoutes);
@@ -79,6 +80,7 @@ app.use("/api/passes", passRoutes);
 app.use("/api/registration", registrationRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/stats", statsRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {

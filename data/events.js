@@ -13,6 +13,7 @@ const events = [
     tags: ["Presentation", "Research", "Innovation"],
     price: "₹70",
     maxTeamSize: 2,
+    capacity: 50,
   },
   {
     id: 2,
@@ -26,6 +27,7 @@ const events = [
     tags: ["Quiz", "Coding", "Debugging", "Logic"],
     price: "₹70",
     maxTeamSize: 1,
+    capacity: 60,
   },
   {
     id: 3,
@@ -47,6 +49,7 @@ const events = [
     price: "₹70",
     maxTeamSize: 3,
     minTeamSize: 2,
+    capacity: 50,
   },
   {
     id: 4,
@@ -60,6 +63,7 @@ const events = [
     tags: ["Coding", "Algorithms", "Data Structures", "Competition"],
     price: "₹70",
     maxTeamSize: 1,
+    capacity: 60,
   },
   {
     id: 5,
@@ -73,6 +77,7 @@ const events = [
     tags: ["Cybersecurity", "AR", "QR", "Treasure Hunt"],
     price: "₹70",
     maxTeamSize: 4,
+    capacity: 60,
   },
   {
     id: 6,
@@ -86,6 +91,7 @@ const events = [
     tags: ["Debate", "Technology", "Communication"],
     price: "₹70",
     maxTeamSize: 1,
+    capacity: 60,
   },
 
   // Non-Technical Events
@@ -101,6 +107,7 @@ const events = [
     tags: ["Chess", "Strategy", "Competition"],
     price: "₹50",
     maxTeamSize: 1,
+    capacity: 60,
   },
   {
     id: 8,
@@ -114,6 +121,7 @@ const events = [
     tags: ["Meme", "Creativity", "Humor"],
     price: "₹50",
     maxTeamSize: 1,
+    capacity: 60,
   },
   {
     id: 9,
@@ -128,6 +136,7 @@ const events = [
     price: "₹50",
     maxTeamSize: 4,
     minTeamSize: 1,
+    capacity: 60,
   },
   {
     id: 10,
@@ -142,6 +151,7 @@ const events = [
     price: "₹50",
     maxTeamSize: 4,
     minTeamSize: 1,
+    capacity: 60,
   },
   {
     id: 11,
@@ -156,6 +166,7 @@ const events = [
     price: "₹50",
     maxTeamSize: 2,
     minTeamSize: 1,
+    capacity: 60,
   },
   {
     id: 12,
@@ -170,6 +181,7 @@ const events = [
     price: "₹50",
     maxTeamSize: 4,
     minTeamSize: 1,
+    capacity: 60,
   },
 ];
 
