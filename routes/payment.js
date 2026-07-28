@@ -62,7 +62,7 @@ router.post("/create-order", verifyToken, async (req, res) => {
       for (const se of registrationData.selectedEvents) {
         const eventData = events.find((e) => e.id === se.id);
         const count = stats.events[se.id] || 0;
-        if (eventData && eventData.capacity && count >= eventData.capacity) {
+        if (eventData && eventData.id === 1 && eventData.capacity && count >= eventData.capacity) {
           capacityError = `Event "${eventData.title}" is already sold out.`;
         }
       }
@@ -72,22 +72,13 @@ router.post("/create-order", verifyToken, async (req, res) => {
       for (const se of registrationData.selectedNonTechEvents) {
         const eventData = events.find((e) => e.id === se.id);
         const count = stats.nonTechEvents[se.id] || 0;
-        if (eventData && eventData.capacity && count >= eventData.capacity) {
+        if (eventData && eventData.id === 1 && eventData.capacity && count >= eventData.capacity) {
           capacityError = `Event "${eventData.title}" is already sold out.`;
         }
       }
     }
     
-    if (registrationData.selectedWorkshops) {
-      const workshopsData = require("../data/workshops").workshops;
-      for (const sw of registrationData.selectedWorkshops) {
-        const workshopData = workshopsData.find((w) => w.id === sw.id);
-        const count = stats.workshops[sw.id] || 0;
-        if (workshopData && workshopData.capacity && count >= workshopData.capacity) {
-          capacityError = `Workshop "${workshopData.title}" is already sold out.`;
-        }
-      }
-    }
+    // Workshop capacity checks removed
 
     if (capacityError) {
       return res.status(400).json({

@@ -5,7 +5,7 @@ const admin = require("firebase-admin");
 // Cache implementation to protect Firestore read quota
 let cachedStats = null;
 let cacheLastFetched = null;
-const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours cache (effectively permanent until next manual restart/reset)
+const CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutes cache
 
 // Helper to get registration stats
 const getRegistrationStats = async () => {

@@ -48,15 +48,50 @@ router.post("/check-duplicate", verifyToken, async (req, res) => {
       });
     }
 
-    // BYPASS Firestore Reads: Return exists: false to conserve read limits
+    const db = admin.firestore();
+    const registrationsRef = db.collection("registrations");
+
+    // Check for email duplicates
+    const emailQuery = registrationsRef.where(
+      "email",
+      "==",
+      email.toLowerCase()
+    );
+    const emailSnapshot = await emailQuery.get();
+
+    // Check for WhatsApp duplicates
+    const whatsappQuery = registrationsRef.where("whatsapp", "==", whatsapp);
+    const whatsappSnapshot = await whatsappQuery.get();
+
+    const duplicateFields = [];
+    let existingRegistration = null;
+
+    if (!emailSnapshot.empty) {
+      duplicateFields.push("email");
+      existingRegistration = {
+        id: emailSnapshot.docs[0].id,
+        ...emailSnapshot.docs[0].data(),
+      };
+    }
+
+    if (!whatsappSnapshot.empty) {
+      duplicateFields.push("whatsapp");
+      if (!existingRegistration) {
+        existingRegistration = {
+          id: whatsappSnapshot.docs[0].id,
+          ...whatsappSnapshot.docs[0].data(),
+        };
+      }
+    }
+
     res.json({
       success: true,
       data: {
-        exists: false,
-        duplicateFields: [],
-        existingRegistration: null,
+        exists: duplicateFields.length > 0,
+        duplicateFields,
+        existingRegistration,
       },
-      message: "Duplicate check bypassed to conserve reads",
+      message: "Duplicate check completed",
     });
   } catch (error) {
     console.error("Error checking duplicate registration:", error);
@@ -106,7 +141,7 @@ router.post("/submit", verifyToken, async (req, res) => {
       for (const se of formData.selectedEvents) {
         const eventData = events.find((e) => e.id === se.id);
         const count = stats.events[se.id] || 0;
-        if (eventData && eventData.capacity && count >= eventData.capacity) {
+        if (eventData && eventData.id === 1 && eventData.capacity && count >= eventData.capacity) {
           capacityError = `Event "${eventData.title}" is already sold out.`;
         }
       }
@@ -116,22 +151,13 @@ router.post("/submit", verifyToken, async (req, res) => {
       for (const se of formData.selectedNonTechEvents) {
         const eventData = events.find((e) => e.id === se.id);
         const count = stats.nonTechEvents[se.id] || 0;
-        if (eventData && eventData.capacity && count >= eventData.capacity) {
+        if (eventData && eventData.id === 1 && eventData.capacity && count >= eventData.capacity) {
           capacityError = `Event "${eventData.title}" is already sold out.`;
         }
       }
     }
     
-    if (formData.selectedWorkshops) {
-      const workshopsData = require("../data/workshops").workshops;
-      for (const sw of formData.selectedWorkshops) {
-        const workshopData = workshopsData.find((w) => w.id === sw.id);
-        const count = stats.workshops[sw.id] || 0;
-        if (workshopData && workshopData.capacity && count >= workshopData.capacity) {
-          capacityError = `Workshop "${workshopData.title}" is already sold out.`;
-        }
-      }
-    }
+    // Workshop capacity checks removed
 
     if (capacityError) {
       return res.status(400).json({
