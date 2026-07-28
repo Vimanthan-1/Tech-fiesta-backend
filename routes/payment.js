@@ -12,7 +12,7 @@ const {
 } = require("../services/emailService");
 const { events } = require("../data/events");
 const { workshops } = require("../data/workshops");
-const { getRegistrationStats } = require("./stats");
+const { getRegistrationStats, incrementStats } = require("./stats");
 
 const router = express.Router();
 
@@ -534,6 +534,9 @@ router.post("/verify-payment", verifyToken, async (req, res) => {
       .collection("registrations")
       .add(finalRegistrationData);
 
+    // Manually increment registration stats in memory cache
+    incrementStats(finalRegistrationData);
+
     // Update payment order status
     await db.collection("payment_orders").doc(razorpay_order_id).update({
       status: "completed",
@@ -869,6 +872,9 @@ router.post("/webhook", async (req, res) => {
         registrationId: transactionResult.registrationId,
       });
     }
+
+    // Manually increment registration stats in memory cache
+    incrementStats(transactionResult.finalRegistrationData);
 
     console.log(`✅ Webhook: Registration ${registrationId} created for order ${razorpayOrderId}`);
 

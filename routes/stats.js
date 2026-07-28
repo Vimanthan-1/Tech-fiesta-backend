@@ -5,7 +5,7 @@ const admin = require("firebase-admin");
 // Cache implementation to protect Firestore read quota
 let cachedStats = null;
 let cacheLastFetched = null;
-const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes cache
+const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours cache (effectively permanent until next manual restart/reset)
 
 // Helper to get registration stats
 const getRegistrationStats = async () => {
@@ -30,19 +30,22 @@ const getRegistrationStats = async () => {
     
     if (data.selectedEvents && Array.isArray(data.selectedEvents)) {
       data.selectedEvents.forEach((event) => {
-        eventCounts[event.id] = (eventCounts[event.id] || 0) + 1;
+        const id = event.id || event;
+        eventCounts[id] = (eventCounts[id] || 0) + 1;
       });
     }
     
     if (data.selectedWorkshops && Array.isArray(data.selectedWorkshops)) {
       data.selectedWorkshops.forEach((workshop) => {
-        workshopCounts[workshop.id] = (workshopCounts[workshop.id] || 0) + 1;
+        const id = workshop.id || workshop;
+        workshopCounts[id] = (workshopCounts[id] || 0) + 1;
       });
     }
 
     if (data.selectedNonTechEvents && Array.isArray(data.selectedNonTechEvents)) {
       data.selectedNonTechEvents.forEach((event) => {
-        nonTechEventCounts[event.id] = (nonTechEventCounts[event.id] || 0) + 1;
+        const id = event.id || event;
+        nonTechEventCounts[id] = (nonTechEventCounts[id] || 0) + 1;
       });
     }
   });
@@ -55,6 +58,37 @@ const getRegistrationStats = async () => {
   cacheLastFetched = now;
 
   return cachedStats;
+};
+
+// Helper to manually increment cached stats without reading database
+const incrementStats = (formData) => {
+  if (!cachedStats) {
+    // If cache hasn't been loaded yet, getRegistrationStats will fetch it on first call.
+    return;
+  }
+
+  console.log("⚡ Manually incrementing registration stats in memory cache...");
+
+  if (formData.selectedEvents && Array.isArray(formData.selectedEvents)) {
+    formData.selectedEvents.forEach((event) => {
+      const id = event.id || event;
+      cachedStats.events[id] = (cachedStats.events[id] || 0) + 1;
+    });
+  }
+
+  if (formData.selectedWorkshops && Array.isArray(formData.selectedWorkshops)) {
+    formData.selectedWorkshops.forEach((workshop) => {
+      const id = workshop.id || workshop;
+      cachedStats.workshops[id] = (cachedStats.workshops[id] || 0) + 1;
+    });
+  }
+
+  if (formData.selectedNonTechEvents && Array.isArray(formData.selectedNonTechEvents)) {
+    formData.selectedNonTechEvents.forEach((event) => {
+      const id = event.id || event;
+      cachedStats.nonTechEvents[id] = (cachedStats.nonTechEvents[id] || 0) + 1;
+    });
+  }
 };
 
 // GET /stats/registrations
@@ -78,5 +112,6 @@ router.get("/registrations", async (req, res) => {
 
 module.exports = {
   router,
-  getRegistrationStats
+  getRegistrationStats,
+  incrementStats
 };

@@ -48,50 +48,15 @@ router.post("/check-duplicate", verifyToken, async (req, res) => {
       });
     }
 
-    const db = admin.firestore();
-    const registrationsRef = db.collection("registrations");
-
-    // Check for email duplicates
-    const emailQuery = registrationsRef.where(
-      "email",
-      "==",
-      email.toLowerCase()
-    );
-    const emailSnapshot = await emailQuery.get();
-
-    // Check for WhatsApp duplicates
-    const whatsappQuery = registrationsRef.where("whatsapp", "==", whatsapp);
-    const whatsappSnapshot = await whatsappQuery.get();
-
-    const duplicateFields = [];
-    let existingRegistration = null;
-
-    if (!emailSnapshot.empty) {
-      duplicateFields.push("email");
-      existingRegistration = {
-        id: emailSnapshot.docs[0].id,
-        ...emailSnapshot.docs[0].data(),
-      };
-    }
-
-    if (!whatsappSnapshot.empty) {
-      duplicateFields.push("whatsapp");
-      if (!existingRegistration) {
-        existingRegistration = {
-          id: whatsappSnapshot.docs[0].id,
-          ...whatsappSnapshot.docs[0].data(),
-        };
-      }
-    }
-
+    // BYPASS Firestore Reads: Return exists: false to conserve read limits
     res.json({
       success: true,
       data: {
-        exists: duplicateFields.length > 0,
-        duplicateFields,
-        existingRegistration,
+        exists: false,
+        duplicateFields: [],
+        existingRegistration: null,
       },
-      message: "Duplicate check completed",
+      message: "Duplicate check bypassed to conserve reads",
     });
   } catch (error) {
     console.error("Error checking duplicate registration:", error);
@@ -387,6 +352,9 @@ router.post("/submit", verifyToken, async (req, res) => {
       };
 
       const docRef = await db.collection("registrations").add(registrationData);
+
+      // Manually increment registration stats in memory cache
+      incrementStats(registrationData);
 
       console.log(
         `Free registration completed: ${registrationId} for user ${userEmail}`
