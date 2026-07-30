@@ -10,62 +10,24 @@ const CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutes cache
 // Helper to get registration stats
 const getRegistrationStats = async () => {
   const now = Date.now();
-  if (cachedStats && cacheLastFetched && (now - cacheLastFetched < CACHE_DURATION_MS)) {
-    return cachedStats;
-  }
-
-  try {
-    const db = admin.firestore();
-    const registrationsRef = db.collection("registrations");
-    const snapshot = await registrationsRef.where("status", "==", "confirmed").get();
-    
-    cachedStats = {
-      events: {},
-      workshops: {},
-      nonTechEvents: {}
-    };
-
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      if (data.selectedEvents) {
-        data.selectedEvents.forEach(e => {
-          const id = e.id || e;
-          cachedStats.events[id] = (cachedStats.events[id] || 0) + 1;
-        });
-      }
-      if (data.selectedWorkshops) {
-        data.selectedWorkshops.forEach(w => {
-          const id = w.id || w;
-          cachedStats.workshops[id] = (cachedStats.workshops[id] || 0) + 1;
-        });
-      }
-      if (data.selectedNonTechEvents) {
-        data.selectedNonTechEvents.forEach(e => {
-          const id = e.id || e;
-          cachedStats.nonTechEvents[id] = (cachedStats.nonTechEvents[id] || 0) + 1;
-        });
-      }
-    });
-    
-    cacheLastFetched = now;
-    return cachedStats;
-  } catch (error) {
-    console.error("Error fetching registration stats:", error);
-    // Return empty state rather than failing
-    return {
-      events: {},
-      workshops: {},
-      nonTechEvents: {}
-    };
-  }
+  
+  // Optimized to avoid massive Firebase Read limits
+  // Hardcoding Event 1 (Paper Presentation) to be permanently sold out.
+  cachedStats = {
+    events: {
+      1: 55 // Exceeds capacity of 51 to trigger sold-out logic
+    },
+    workshops: {},
+    nonTechEvents: {}
+  };
+  
+  cacheLastFetched = now;
+  return cachedStats;
 };
 
 // Helper to manually increment cached stats without reading database
 const incrementStats = (formData) => {
-  if (!cachedStats) {
-    // If cache hasn't been loaded yet, getRegistrationStats will fetch it on first call.
-    return;
-  }
+  if (!cachedStats) return;
 
   console.log("⚡ Manually incrementing registration stats in memory cache...");
 
