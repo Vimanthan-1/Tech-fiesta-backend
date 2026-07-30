@@ -16,7 +16,9 @@ const getRegistrationStats = async () => {
 
   // TEMPORARY BYPASS FOR FIREBASE READ LIMITS
   cachedStats = {
-    events: {},
+    events: {
+      1: 55 // Hardcoded to 55 to exceed the capacity of 51 and trigger the sold-out logic
+    },
     workshops: {},
     nonTechEvents: {}
   };
