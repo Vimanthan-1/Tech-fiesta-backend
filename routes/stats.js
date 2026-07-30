@@ -14,46 +14,11 @@ const getRegistrationStats = async () => {
     return cachedStats;
   }
 
-  const db = admin.firestore();
-  
-  // We only count registrations that are successfully confirmed
-  const snapshot = await db.collection("registrations")
-    .where("status", "==", "confirmed")
-    .get();
-
-  const eventCounts = {};
-  const workshopCounts = {};
-  const nonTechEventCounts = {};
-
-  snapshot.forEach((doc) => {
-    const data = doc.data();
-    
-    if (data.selectedEvents && Array.isArray(data.selectedEvents)) {
-      data.selectedEvents.forEach((event) => {
-        const id = event.id || event;
-        eventCounts[id] = (eventCounts[id] || 0) + 1;
-      });
-    }
-    
-    if (data.selectedWorkshops && Array.isArray(data.selectedWorkshops)) {
-      data.selectedWorkshops.forEach((workshop) => {
-        const id = workshop.id || workshop;
-        workshopCounts[id] = (workshopCounts[id] || 0) + 1;
-      });
-    }
-
-    if (data.selectedNonTechEvents && Array.isArray(data.selectedNonTechEvents)) {
-      data.selectedNonTechEvents.forEach((event) => {
-        const id = event.id || event;
-        nonTechEventCounts[id] = (nonTechEventCounts[id] || 0) + 1;
-      });
-    }
-  });
-
+  // TEMPORARY BYPASS FOR FIREBASE READ LIMITS
   cachedStats = {
-    events: eventCounts,
-    workshops: workshopCounts,
-    nonTechEvents: nonTechEventCounts
+    events: {},
+    workshops: {},
+    nonTechEvents: {}
   };
   cacheLastFetched = now;
 

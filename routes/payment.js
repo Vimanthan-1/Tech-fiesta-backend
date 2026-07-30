@@ -47,6 +47,61 @@ try {
 } catch (error) {
   console.error("❌ Failed to initialize Razorpay:", error.message);
 }
+const calculateOrderAmount = (registrationData) => {
+  if (!registrationData) return 0;
+  let totalAmount = 0;
+  if (registrationData.selectedPass) {
+    const pass = getPassById(registrationData.selectedPass);
+    if (pass) {
+      const prices = [];
+      if (registrationData.selectedEvents) {
+        registrationData.selectedEvents.forEach((se) => {
+          const event = events.find((e) => e.id === se.id);
+          prices.push(event && event.price ? parseInt(event.price.replace("₹", "")) : 70);
+        });
+      }
+      if (registrationData.selectedWorkshops) {
+        const workshopsData = require("../data/workshops").workshops;
+        registrationData.selectedWorkshops.forEach((sw) => {
+          const workshop = workshopsData.find((w) => w.id === sw.id);
+          prices.push(workshop && workshop.price ? parseInt(workshop.price.replace("₹", "")) : 101);
+        });
+      }
+      if (registrationData.selectedNonTechEvents) {
+        registrationData.selectedNonTechEvents.forEach((se) => {
+          const event = events.find((e) => e.id === se.id);
+          prices.push(event && event.price ? parseInt(event.price.replace("₹", "")) : 50);
+        });
+      }
+      prices.sort((a, b) => b - a);
+      totalAmount = 149;
+      if (prices.length > 3) {
+        totalAmount += prices.slice(3).reduce((sum, p) => sum + p, 0);
+      }
+    }
+  } else {
+    if (registrationData.selectedEvents) {
+      registrationData.selectedEvents.forEach((se) => {
+        const event = events.find((e) => e.id === se.id);
+        totalAmount += event && event.price ? parseInt(event.price.replace("₹", "")) : 70;
+      });
+    }
+    if (registrationData.selectedWorkshops) {
+      const workshopsData = require("../data/workshops").workshops;
+      registrationData.selectedWorkshops.forEach((sw) => {
+        const workshop = workshopsData.find((w) => w.id === sw.id);
+        totalAmount += workshop && workshop.price ? parseInt(workshop.price.replace("₹", "")) : 101;
+      });
+    }
+    if (registrationData.selectedNonTechEvents) {
+      registrationData.selectedNonTechEvents.forEach((se) => {
+        const event = events.find((e) => e.id === se.id);
+        totalAmount += event && event.price ? parseInt(event.price.replace("₹", "")) : 50;
+      });
+    }
+  }
+  return totalAmount;
+};
 
 // Create order endpoint
 router.post("/create-order", verifyToken, async (req, res) => {
@@ -88,119 +143,8 @@ router.post("/create-order", verifyToken, async (req, res) => {
       });
     }
 
-    // Calculate dynamic amount based on selected events/workshops
-    let totalAmount = 0;
     const isCIT = userEmail && userEmail.toLowerCase().endsWith("@citchennai.net");
-
-    // Check if pass is selected
-    if (registrationData.selectedPass) {
-      const pass = getPassById(registrationData.selectedPass);
-      if (pass) {
-        // Collect individual prices of all selected items
-        const prices = [];
-        
-        if (registrationData.selectedEvents) {
-          registrationData.selectedEvents.forEach((se) => {
-            const event = events.find((e) => e.id === se.id);
-            if (event && event.price) {
-              const priceStr = event.price;
-              prices.push(parseInt(priceStr.replace("₹", "")));
-            } else {
-              prices.push(70);
-            }
-          });
-        }
-
-        if (registrationData.selectedWorkshops) {
-          const workshopsData = require("../data/workshops").workshops;
-          registrationData.selectedWorkshops.forEach((sw) => {
-            const workshop = workshopsData.find((w) => w.id === sw.id);
-            if (workshop && workshop.price) {
-              prices.push(parseInt(workshop.price.replace("₹", "")));
-            } else {
-              prices.push(101);
-            }
-          });
-        }
-
-        if (registrationData.selectedNonTechEvents) {
-          registrationData.selectedNonTechEvents.forEach((se) => {
-            const event = events.find((e) => e.id === se.id);
-            if (event && event.price) {
-              prices.push(parseInt(event.price.replace("₹", "")));
-            } else {
-              prices.push(50);
-            }
-          });
-        }
-
-        // Sort descending so the 3 most expensive items are covered by the pass
-        prices.sort((a, b) => b - a);
-
-        // Base pass price is ₹149
-        totalAmount = 149;
-
-        // Any items beyond the first 3 are charged at their regular price
-        if (prices.length > 3) {
-          const extraPrices = prices.slice(3);
-          const extraCost = extraPrices.reduce((sum, p) => sum + p, 0);
-          totalAmount += extraCost;
-        }
-      }
-    } else {
-      // No pass selected - charge for individual events and workshops
-
-      // Calculate event costs dynamically from events data
-      if (
-        registrationData.selectedEvents &&
-        registrationData.selectedEvents.length > 0
-      ) {
-        registrationData.selectedEvents.forEach((selectedEvent) => {
-          const event = events.find((e) => e.id === selectedEvent.id);
-          if (event && event.price) {
-            const priceStr = event.price;
-            totalAmount += parseInt(priceStr.replace("₹", ""));
-          } else {
-            totalAmount += 70;
-          }
-        });
-      }
-
-      // Calculate workshop costs
-      if (
-        registrationData.selectedWorkshops &&
-        registrationData.selectedWorkshops.length > 0
-      ) {
-        const workshopsData = require("../data/workshops").workshops;
-        registrationData.selectedWorkshops.forEach((selectedWorkshop) => {
-          const workshop = workshopsData.find((w) => w.id === selectedWorkshop.id);
-          if (workshop && workshop.price) {
-            totalAmount += parseInt(workshop.price.replace("₹", ""));
-          } else {
-            totalAmount += 101;
-          }
-        });
-      }
-
-      // Calculate non-tech event costs
-      if (
-        registrationData.selectedNonTechEvents &&
-        registrationData.selectedNonTechEvents.length > 0
-      ) {
-        registrationData.selectedNonTechEvents.forEach((selectedEvent) => {
-          const event = events.find((e) => e.id === selectedEvent.id);
-          if (event && event.price) {
-            const priceStr = event.price;
-            totalAmount += parseInt(priceStr.replace("₹", ""));
-          } else {
-            totalAmount += 50;
-          }
-        });
-      }
-    }
-
-    // Final amount
-    const amount = totalAmount;
+    const amount = calculateOrderAmount(registrationData);
 
     // Validate amount
     if (amount < 0) {
@@ -377,6 +321,8 @@ router.post("/verify-payment", verifyToken, async (req, res) => {
       "Payment completed successfully"
     );
 
+    // TEMPORARY BYPASS FOR FIREBASE READ LIMITS
+    /*
     // Get order details from Firebase
     const db = admin.firestore();
     const orderDoc = await db
@@ -402,6 +348,14 @@ router.post("/verify-payment", verifyToken, async (req, res) => {
         message: "You are not authorized to verify this payment",
       });
     }
+    */
+    const db = admin.firestore();
+    const orderData = {
+      userId: req.user.uid,
+      amount: registrationData ? calculateOrderAmount(registrationData) : 0,
+      currency: "INR",
+      registrationId: null
+    };
 
     // Check if registration already exists to prevent duplicates
     if (orderData.registrationId) {
@@ -698,6 +652,9 @@ router.post("/webhook", async (req, res) => {
       return res.status(200).json({ status: "ok", event: eventType, action: "ignored" });
     }
 
+    // TEMPORARY BYPASS FOR FIREBASE READ LIMITS
+    return res.status(200).json({ status: "ok", reason: "Read limits exceeded, webhook ignored" });
+
     const paymentEntity = payload.payload?.payment?.entity;
     if (!paymentEntity) {
       console.error("❌ Webhook: Missing payment entity in payload");
@@ -710,6 +667,8 @@ router.post("/webhook", async (req, res) => {
 
     console.log(`🔔 Webhook: payment.captured for order ${razorpayOrderId}, payment ${razorpayPaymentId}, amount ₹${capturedAmount / 100}`);
 
+    // TEMPORARY BYPASS FOR FIREBASE READ LIMITS
+    /*
     // Look up the payment order in Firestore
     const db = admin.firestore();
     const orderRef = db.collection("payment_orders").doc(razorpayOrderId);
@@ -721,6 +680,14 @@ router.post("/webhook", async (req, res) => {
     }
 
     const orderData = orderDoc.data();
+    */
+    const db = admin.firestore();
+    const orderRef = db.collection("payment_orders").doc(razorpayOrderId);
+    const orderData = {
+      amount: capturedAmount,
+      currency: "INR",
+      registrationId: null
+    };
 
     // DUPLICATE PROTECTION: If registration already exists, skip (client-side already handled it)
     if (orderData.registrationId) {

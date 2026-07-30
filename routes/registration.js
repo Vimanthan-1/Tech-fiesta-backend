@@ -48,6 +48,8 @@ router.post("/check-duplicate", verifyToken, async (req, res) => {
       });
     }
 
+    // TEMPORARY BYPASS FOR FIREBASE READ LIMITS
+    /*
     const db = admin.firestore();
     const registrationsRef = db.collection("registrations");
 
@@ -83,6 +85,9 @@ router.post("/check-duplicate", verifyToken, async (req, res) => {
         };
       }
     }
+    */
+    const duplicateFields = [];
+    const existingRegistration = null;
 
     res.json({
       success: true,
@@ -486,6 +491,8 @@ router.post("/submit", verifyToken, async (req, res) => {
 router.get("/my-registrations", verifyToken, async (req, res) => {
   try {
     const userEmail = req.user.email;
+    // TEMPORARY BYPASS FOR FIREBASE READ LIMITS
+    /*
     const db = admin.firestore();
     const registrationsRef = db.collection("registrations");
 
@@ -499,6 +506,8 @@ router.get("/my-registrations", verifyToken, async (req, res) => {
         ...doc.data(),
       });
     });
+    */
+    const registrations = [];
 
     res.json({
       success: true,
@@ -718,6 +727,8 @@ router.put("/admin/notes/:registrationId", verifyToken, async (req, res) => {
 // Admin endpoint to get all registrations with admin fields
 router.get("/admin/all", verifyToken, async (req, res) => {
   try {
+    // TEMPORARY BYPASS FOR FIREBASE READ LIMITS
+    /*
     const db = admin.firestore();
     const registrationsRef = db.collection("registrations");
     const snapshot = await registrationsRef.orderBy("createdAt", "desc").get();
@@ -729,6 +740,8 @@ router.get("/admin/all", verifyToken, async (req, res) => {
         ...doc.data(),
       });
     });
+    */
+    const registrations = [];
 
     res.json({
       success: true,
