@@ -14,17 +14,50 @@ const getRegistrationStats = async () => {
     return cachedStats;
   }
 
-  // TEMPORARY BYPASS FOR FIREBASE READ LIMITS
-  cachedStats = {
-    events: {
-      1: 55 // Hardcoded to 55 to exceed the capacity of 51 and trigger the sold-out logic
-    },
-    workshops: {},
-    nonTechEvents: {}
-  };
-  cacheLastFetched = now;
+  try {
+    const db = admin.firestore();
+    const registrationsRef = db.collection("registrations");
+    const snapshot = await registrationsRef.where("status", "==", "confirmed").get();
+    
+    cachedStats = {
+      events: {},
+      workshops: {},
+      nonTechEvents: {}
+    };
 
-  return cachedStats;
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.selectedEvents) {
+        data.selectedEvents.forEach(e => {
+          const id = e.id || e;
+          cachedStats.events[id] = (cachedStats.events[id] || 0) + 1;
+        });
+      }
+      if (data.selectedWorkshops) {
+        data.selectedWorkshops.forEach(w => {
+          const id = w.id || w;
+          cachedStats.workshops[id] = (cachedStats.workshops[id] || 0) + 1;
+        });
+      }
+      if (data.selectedNonTechEvents) {
+        data.selectedNonTechEvents.forEach(e => {
+          const id = e.id || e;
+          cachedStats.nonTechEvents[id] = (cachedStats.nonTechEvents[id] || 0) + 1;
+        });
+      }
+    });
+    
+    cacheLastFetched = now;
+    return cachedStats;
+  } catch (error) {
+    console.error("Error fetching registration stats:", error);
+    // Return empty state rather than failing
+    return {
+      events: {},
+      workshops: {},
+      nonTechEvents: {}
+    };
+  }
 };
 
 // Helper to manually increment cached stats without reading database

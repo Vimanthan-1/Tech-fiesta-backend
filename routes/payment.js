@@ -321,8 +321,6 @@ router.post("/verify-payment", verifyToken, async (req, res) => {
       "Payment completed successfully"
     );
 
-    // TEMPORARY BYPASS FOR FIREBASE READ LIMITS
-    /*
     // Get order details from Firebase
     const db = admin.firestore();
     const orderDoc = await db
@@ -348,14 +346,6 @@ router.post("/verify-payment", verifyToken, async (req, res) => {
         message: "You are not authorized to verify this payment",
       });
     }
-    */
-    const db = admin.firestore();
-    const orderData = {
-      userId: req.user.uid,
-      amount: registrationData ? calculateOrderAmount(registrationData) : 0,
-      currency: "INR",
-      registrationId: null
-    };
 
     // Check if registration already exists to prevent duplicates
     if (orderData.registrationId) {
@@ -652,9 +642,6 @@ router.post("/webhook", async (req, res) => {
       return res.status(200).json({ status: "ok", event: eventType, action: "ignored" });
     }
 
-    // TEMPORARY BYPASS FOR FIREBASE READ LIMITS
-    return res.status(200).json({ status: "ok", reason: "Read limits exceeded, webhook ignored" });
-
     const paymentEntity = payload.payload?.payment?.entity;
     if (!paymentEntity) {
       console.error("❌ Webhook: Missing payment entity in payload");
@@ -667,8 +654,6 @@ router.post("/webhook", async (req, res) => {
 
     console.log(`🔔 Webhook: payment.captured for order ${razorpayOrderId}, payment ${razorpayPaymentId}, amount ₹${capturedAmount / 100}`);
 
-    // TEMPORARY BYPASS FOR FIREBASE READ LIMITS
-    /*
     // Look up the payment order in Firestore
     const db = admin.firestore();
     const orderRef = db.collection("payment_orders").doc(razorpayOrderId);
@@ -680,14 +665,6 @@ router.post("/webhook", async (req, res) => {
     }
 
     const orderData = orderDoc.data();
-    */
-    const db = admin.firestore();
-    const orderRef = db.collection("payment_orders").doc(razorpayOrderId);
-    const orderData = {
-      amount: capturedAmount,
-      currency: "INR",
-      registrationId: null
-    };
 
     // DUPLICATE PROTECTION: If registration already exists, skip (client-side already handled it)
     if (orderData.registrationId) {
