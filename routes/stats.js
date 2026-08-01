@@ -13,12 +13,16 @@ const getRegistrationStats = async () => {
   
   // Optimized to avoid massive Firebase Read limits
   // Hardcoding Event 1 (Paper Presentation) to be permanently sold out.
+  // Hardcoding Non-Tech Events 9 (Missing Lyrics) and 10 (Murder Mystery) as sold out.
   cachedStats = {
     events: {
       1: 55 // Exceeds capacity of 51 to trigger sold-out logic
     },
     workshops: {},
-    nonTechEvents: {}
+    nonTechEvents: {
+      9: 55, // Missing Lyrics - sold out (capacity 50)
+      10: 55 // Murder Mystery - sold out (capacity 50)
+    }
   };
   
   cacheLastFetched = now;
