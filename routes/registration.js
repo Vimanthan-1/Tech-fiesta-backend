@@ -141,7 +141,7 @@ router.post("/submit", verifyToken, async (req, res) => {
       for (const se of formData.selectedEvents) {
         const eventData = events.find((e) => e.id === se.id);
         const count = stats.events[se.id] || 0;
-        if (eventData && eventData.id === 1 && eventData.capacity && count >= eventData.capacity) {
+        if (eventData && (eventData.id === 1 || eventData.id === 3 || eventData.id === 5) && eventData.capacity && count >= eventData.capacity) {
           capacityError = `Event "${eventData.title}" is already sold out.`;
         }
       }

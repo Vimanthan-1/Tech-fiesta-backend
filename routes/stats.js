@@ -16,7 +16,9 @@ const getRegistrationStats = async () => {
   // Hardcoding Non-Tech Events 9 (Missing Lyrics) and 10 (Murder Mystery) as sold out.
   cachedStats = {
     events: {
-      1: 55 // Exceeds capacity of 51 to trigger sold-out logic
+      1: 55, // Exceeds capacity of 51 to trigger sold-out logic
+      3: 55, // UI Challenge - sold out (capacity 50)
+      5: 105 // Hack the Campus - sold out (capacity 100)
     },
     workshops: {
       2: 85 // Raspberry Pi - sold out (capacity 80)
