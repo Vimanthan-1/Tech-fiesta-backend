@@ -18,7 +18,9 @@ const getRegistrationStats = async () => {
     events: {
       1: 55 // Exceeds capacity of 51 to trigger sold-out logic
     },
-    workshops: {},
+    workshops: {
+      2: 85 // Raspberry Pi - sold out (capacity 80)
+    },
     nonTechEvents: {
       9: 55, // Missing Lyrics - sold out (capacity 50)
       10: 55 // Murder Mystery - sold out (capacity 50)

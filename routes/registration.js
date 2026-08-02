@@ -157,7 +157,13 @@ router.post("/submit", verifyToken, async (req, res) => {
       }
     }
     
-    // Workshop capacity checks removed
+    if (formData.selectedWorkshops) {
+      for (const sw of formData.selectedWorkshops) {
+        if (sw.id === 2) {
+          capacityError = `Workshop "Raspberry Pi, Linux and OpenCV" is already sold out.`;
+        }
+      }
+    }
 
     if (capacityError) {
       return res.status(400).json({
