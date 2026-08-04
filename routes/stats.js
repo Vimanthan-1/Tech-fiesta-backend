@@ -12,22 +12,30 @@ const getRegistrationStats = async () => {
   const now = Date.now();
   
   // Optimized to avoid massive Firebase Read limits
-  // Hardcoding Event 1 (Paper Presentation) to be permanently sold out.
-  // Hardcoding Non-Tech Events 9 (Missing Lyrics) and 10 (Murder Mystery) as sold out.
+  // All Events (1-12) closed as registrations reach 50+
   cachedStats = {
     events: {
-      1: 55, // Exceeds capacity of 51 to trigger sold-out logic
+      1: 55, // Paper Presentation - sold out (capacity 51)
+      2: 105, // Tech Survivor - sold out (capacity 100)
       3: 55, // UI Challenge - sold out (capacity 50)
       4: 105, // Common Coding Challenge - sold out (capacity 100)
-      5: 105 // Hack the Campus - sold out (capacity 100)
+      5: 105, // Hack the Campus - sold out (capacity 50)
+      6: 0 // Tech Debate - OPEN
     },
     workshops: {
-      2: 85 // Raspberry Pi - sold out (capacity 80)
+      1: 85, // Orchestration of Multi-Agent Systems - sold out
+      2: 85, // Raspberry Pi - sold out
+      3: 85, // MLOps for RAG - sold out
+      4: 85, // Building a Private Cloud - sold out
+      5: 85  // Blockchains and Smart Contracts - sold out
     },
     nonTechEvents: {
       7: 105, // Chess - sold out (capacity 100)
+      8: 0, // Best Meme Creation - OPEN
       9: 55, // Missing Lyrics - sold out (capacity 50)
-      10: 55 // Murder Mystery - sold out (capacity 50)
+      10: 55, // Murder Mystery - sold out (capacity 50)
+      11: 55, // Wiki Surfers - sold out (capacity 50)
+      12: 55 // Adzap - sold out (capacity 50)
     }
   };
   
