@@ -18,6 +18,7 @@ const getRegistrationStats = async () => {
     events: {
       1: 55, // Exceeds capacity of 51 to trigger sold-out logic
       3: 55, // UI Challenge - sold out (capacity 50)
+      4: 105, // Common Coding Challenge - sold out (capacity 100)
       5: 105 // Hack the Campus - sold out (capacity 100)
     },
     workshops: {
