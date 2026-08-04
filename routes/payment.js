@@ -127,7 +127,9 @@ router.post("/create-order", verifyToken, async (req, res) => {
       for (const se of registrationData.selectedNonTechEvents) {
         const eventData = events.find((e) => e.id === se.id);
         const count = stats.nonTechEvents[se.id] || 0;
-        if (eventData && (eventData.id === 7 || eventData.id === 9 || eventData.id === 10) && eventData.capacity && count >= eventData.capacity) {
+        if (eventData && eventData.id === 12) {
+          capacityError = `Event "Adzap" registrations are closed.`;
+        } else if (eventData && (eventData.id === 7 || eventData.id === 9 || eventData.id === 10) && eventData.capacity && count >= eventData.capacity) {
           capacityError = `Event "${eventData.title}" is already sold out.`;
         }
       }

@@ -26,7 +26,8 @@ const getRegistrationStats = async () => {
     nonTechEvents: {
       7: 105, // Chess - sold out (capacity 100)
       9: 55, // Missing Lyrics - sold out (capacity 50)
-      10: 55 // Murder Mystery - sold out (capacity 50)
+      10: 55, // Murder Mystery - sold out (capacity 50)
+      12: 55 // Adzap - sold out (capacity 50)
     }
   };
   
