@@ -20,7 +20,7 @@ const getRegistrationStats = async () => {
       3: 55, // UI Challenge - sold out (capacity 50)
       4: 105, // Common Coding Challenge - sold out (capacity 100)
       5: 105, // Hack the Campus - sold out (capacity 50)
-      6: 0 // Tech Debate - OPEN
+      6: 105 // Tech Debate - sold out (capacity 100)
     },
     workshops: {
       1: 85, // Orchestration of Multi-Agent Systems - sold out
@@ -31,7 +31,7 @@ const getRegistrationStats = async () => {
     },
     nonTechEvents: {
       7: 105, // Chess - sold out (capacity 100)
-      8: 0, // Best Meme Creation - OPEN
+      8: 105, // Best Meme Creation - sold out (capacity 100)
       9: 55, // Missing Lyrics - sold out (capacity 50)
       10: 55, // Murder Mystery - sold out (capacity 50)
       11: 55, // Wiki Surfers - sold out (capacity 50)
